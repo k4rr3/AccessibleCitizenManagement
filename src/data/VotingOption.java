@@ -5,6 +5,8 @@ package data;
  */
 final public class VotingOption {
     // The tax identification number in the Spanish state.
+
+    //Todo: define null and blank votes
     private final String party;
 
     public VotingOption(String option) {

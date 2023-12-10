@@ -5,17 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9056532e-6c0d-4e50-9286-3928a9bcbf44" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/evoting/biometricdataperipheral/HumanBiometricScanner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exceptions/ConnectException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exceptions/InvalidAccountException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exceptions/InvalidDNIDocumException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/exceptions/NotEnabledException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/ElectoralOrganism.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/services/LocalService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/evoting/VotingKiosk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/Scrutiny.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/Scrutiny.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/VotingOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/VotingOption.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +56,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1702208650152</updated>
-      <workItem from="1702208651197" duration="1502000" />
+      <workItem from="1702208651197" duration="1590000" />
     </task>
     <servers />
   </component>

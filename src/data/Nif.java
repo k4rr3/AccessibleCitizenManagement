@@ -30,16 +30,13 @@ final public class Nif {
 
     private boolean isValidLetter(String digits, char expectedLetter) {
         // Perform the algorithm to calculate the expected letter based on the first eight digits
-        // You may need to customize this logic based on the specific algorithm for your application
         // This is a simple example; you should replace it with the actual algorithm for calculating the letter.
-        int sum = 0;
-        for (int i = 0; i < digits.length(); i++) {
-            sum += Character.getNumericValue(digits.charAt(i));
-        }
-        char calculatedLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(sum % 23);
 
-        // Compare the calculated letter with the expected letter
+        int value = Integer.parseInt(digits);
+        String letters = "TRWAGMYFPDXBNJZSQVHLCKE";
+        char calculatedLetter = letters.charAt(value % 23);
         return calculatedLetter == expectedLetter;
+
     }
 
     @Override

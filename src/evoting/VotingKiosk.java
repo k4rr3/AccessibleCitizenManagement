@@ -1,12 +1,10 @@
 package evoting;
 
+import data.BiometricData;
 import data.Nif;
 import data.Password;
 import data.VotingOption;
-import exceptions.ConnectException;
-import exceptions.InvalidAccountException;
-import exceptions.InvalidDNIDocumException;
-import exceptions.NotEnabledException;
+import exceptions.*;
 
 /**
  * Internal classes involved in in the exercise of the vote
@@ -50,4 +48,32 @@ public class VotingKiosk {
         }
         //(...) Setter methods for injecting dependences and additional methods
     }
+
+    /*=================================================================================*/
+    private void verifiyBiometricData
+    (BiometricData humanBioD, BiometricData passpBioD)
+            throws BiometricVerificationFailedException {
+    }
+
+    private void removeBiometricData() {
+    }
+
+    /*=================================================================================*/
+    public void grantExplicitConsent(char cons) {
+    }
+
+    public void readPassport()
+            throws NotValidPassportException, PassportBiometricReadingException {
+    }
+
+    public void readFaceBiometrics() throws HumanBiometricScanningException {
+    }
+
+    public void readFingerPrintBiometrics()
+            throws NotEnabledException, HumanBiometricScanningException,
+            BiometricVerificationFailedException, ConnectException
+    {
+    }
+
+
 }

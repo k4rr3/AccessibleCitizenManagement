@@ -7,44 +7,51 @@ import data.VotingOption;
 import exceptions.*;
 
 /**
- * Internal classes involved in in the exercise of the vote
+ * Internal classes involved in the exercise of the vote
  */
 public class VotingKiosk {
     //  ??? The class members
     // ???The constructor/s
     // Input events
-    public void initVoting() { //. . .
+    private Nif nif;
+
+    public VotingKiosk() {
+
     }
 
-    public void setDocument(char opt) { // . . .
+    public void initVoting() {
+
+    }
+
+    public void setDocument(char opt) {
     }
 
     public void enterAccount(String login, Password pssw) throws InvalidAccountException {
-        // . . .}
-    }
-
-    public void confirmIdentif(char conf) throws InvalidDNIDocumException {// . . .
     }
 
 
-    public void enterNif(Nif nif) throws NotEnabledException, ConnectException {// . . .
+    public void confirmIdentif(char conf) throws InvalidDNIDocumException {
     }
 
-    public void initOptionsNavigation() {// . . .
+
+    public void enterNif(Nif nif) throws NotEnabledException, ConnectException {
     }
 
-    public void consultVotingOption(VotingOption vopt) {// . . .
+    public void initOptionsNavigation() {
     }
 
-    public void vote() {// . . .
+    public void consultVotingOption(VotingOption vopt) {
     }
 
-    public void confirmVotingOption(char conf) throws ConnectException {// . . .
+    public void vote() {
+    }
+
+    public void confirmVotingOption(char conf) throws ConnectException {
     }
 
     // Internal operation, not required
     private void finalizeSession() {
-        {// . . .
+        {
         }
         //(...) Setter methods for injecting dependences and additional methods
     }
@@ -71,8 +78,7 @@ public class VotingKiosk {
 
     public void readFingerPrintBiometrics()
             throws NotEnabledException, HumanBiometricScanningException,
-            BiometricVerificationFailedException, ConnectException
-    {
+            BiometricVerificationFailedException, ConnectException {
     }
 
 

@@ -1,6 +1,7 @@
 package evoting.biometricdataperipheral;
 
 import data.SingleBiometricData;
+import exceptions.BiometricVerificationFailedException;
 import exceptions.HumanBiometricScanningException;
 
 /**
@@ -8,8 +9,8 @@ import exceptions.HumanBiometricScanningException;
  */
 
 public interface HumanBiometricScanner {// Peripheral for scanning human biometrics
-    SingleBiometricData scanFaceBiometrics ()
-            throws HumanBiometricScanningException;
-    SingleBiometricData scanFingerprintBiometrics ()
+    SingleBiometricData scanFaceBiometrics (byte[] faceData)
+            throws BiometricVerificationFailedException;
+    SingleBiometricData scanFingerprintBiometrics (byte[] fingerprintData)
             throws HumanBiometricScanningException;
 }

@@ -1,31 +1,38 @@
 package data;
 
+import exceptions.InvalidDNIDocumException;
+
 final public class Nif {
 
-    private final String nif;
+    private String nif = null;
 
-    public Nif(String nif) {
+    public Nif(String nif) throws InvalidDNIDocumException{
+
+        isValidNif(nif);
+        this.nif = nif;
+    }
+
+    private void isValidNif(String nif) throws InvalidDNIDocumException {
         //Check if the NIF is not null and has the correct length
         if (nif == null || nif.length() != 9) {
-            throw new IllegalArgumentException("NIF must have length 9");
+            throw new InvalidDNIDocumException("NIF must have length 9");
         }
         // Check if the first eight characters are digits
         for (int i = 0; i < 8; i++) {
             if (!Character.isDigit(nif.charAt(i))) {
-                throw new IllegalArgumentException("The first 8 chars of the NIF must be digits.");
+                throw new InvalidDNIDocumException("The first 8 chars of the NIF must be digits.");
             }
         }
         // Check if the last character is a letter
         char lastChar = nif.charAt(8);
         if (!Character.isLetter(lastChar)) {
-            throw new IllegalArgumentException("The last character of the NIF must be a letter.");
+            throw new InvalidDNIDocumException("The last character of the NIF must be a letter.");
         }
 
         // Check if the letter is correct based on the first eight digits
         if (!isValidLetter(nif.substring(0, 8), lastChar)) {
-            throw new IllegalArgumentException("The letter of the NIF is not valid.");
+            throw new InvalidDNIDocumException("The letter of the NIF is not valid.");
         }
-        this.nif = nif;
     }
 
     private boolean isValidLetter(String digits, char expectedLetter) {

@@ -1,4 +1,4 @@
-package evoting;
+package mocks;
 
 import data.BiometricData;
 import data.Nif;
@@ -8,11 +8,11 @@ import exceptions.InvalidDNIDocumException;
 import exceptions.NotValidPassportException;
 import exceptions.PassportBiometricReadingException;
 
-public class MyPassportBiometricScanner implements PassportBiometricReader {
+public class StubPassportBiometricScanner implements PassportBiometricReader {
     private String passportNumber; // Assuming you need to store the passport number
 
     // Constructor
-    public MyPassportBiometricScanner(String passportNumber) {
+    public StubPassportBiometricScanner(String passportNumber) {
         this.passportNumber = passportNumber;
     }
 

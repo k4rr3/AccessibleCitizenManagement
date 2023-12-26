@@ -10,7 +10,7 @@ import exceptions.HumanBiometricScanningException;
 
 public interface HumanBiometricScanner {// Peripheral for scanning human biometrics
     SingleBiometricData scanFaceBiometrics (byte[] faceData)
-            throws BiometricVerificationFailedException;
+            throws HumanBiometricScanningException;
     SingleBiometricData scanFingerprintBiometrics (byte[] fingerprintData)
             throws HumanBiometricScanningException;
 }

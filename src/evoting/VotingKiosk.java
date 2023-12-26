@@ -4,10 +4,10 @@ import data.BiometricData;
 import data.Nif;
 import data.Password;
 import data.VotingOption;
-import evoting.biometricdataperipheral.HumanBiometricScanner;
 import exceptions.*;
+import mocks.StubHumanBiometricScanner;
+import mocks.StubPassportBiometricScanner;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -16,8 +16,8 @@ import java.util.Scanner;
  */
 public class VotingKiosk {
     private Nif nif;
-    private BiometricData userBiometricData;
-    private BiometricData passportBiometricData;
+    private BiometricData humanBioD;
+    private BiometricData passpBioD;
     private char explicitConsentGiven = 'n';
     //  ??? The class members
     // ???The constructor/s
@@ -25,10 +25,10 @@ public class VotingKiosk {
     private char opt;
 
     //======================================================================
-    private final HashMap<String, String> support;
+    private final HashMap<String, String> supportUsers;
 
     public VotingKiosk(HashMap<String, String> support) {
-        this.support = support;
+        this.supportUsers = support;
     }
 
     public void initVoting() {
@@ -53,10 +53,11 @@ public class VotingKiosk {
 
     }
 
+    //TODO: NO ES LO MISMO StubLocalService que la función enterAccount de VotingKiosk ???
     public void enterAccount(String login, Password pssw) throws InvalidAccountException {
-        if (support.containsKey(login)) {
+        if (supportUsers.containsKey(login)) {
             // Check if the provided password matches the stored password
-            String storedPassword = support.get(login);
+            String storedPassword = supportUsers.get(login);
             if (pssw != null && pssw.getPassword().equals(storedPassword)) {
                 System.out.println("Authentication successful. Welcome, " + login + "!");
             } else {
@@ -77,8 +78,8 @@ public class VotingKiosk {
         try {
             nif = new Nif("a");
             // Assuming you have biometric data available
-            MyHumanBiometricScanner humanBiometricScanner = new MyHumanBiometricScanner();
-            MyPassportBiometricScanner passportBiometricScanner = new MyPassportBiometricScanner("sample");
+            StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
+            StubPassportBiometricScanner passportBiometricScanner = new StubPassportBiometricScanner("sample");
             //TODO: Comprobar identidad con HumanBiometricScanner y PassportBiometricScanner ???
             System.out.println("Biometric data verification successful. Identification confirmed.");
         } catch (InvalidDNIDocumException e) {
@@ -111,12 +112,18 @@ public class VotingKiosk {
     }
 
     /*=================================================================================*/
-    private void verifiyBiometricData
-    (BiometricData humanBioD, BiometricData passpBioD)
+    private void verifyBiometricData(BiometricData humanBioD, BiometricData passpBioD)
             throws BiometricVerificationFailedException {
+        if (!humanBioD.equals(passpBioD)) {
+            removeBiometricData();
+            throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
+        }
+
     }
 
     private void removeBiometricData() {
+        humanBioD.deleteAllInfo();
+        passpBioD.deleteAllInfo();
     }
 
     /*=================================================================================*/
@@ -126,7 +133,7 @@ public class VotingKiosk {
 
     public void readPassport(String passportNumber, String extractedNif, byte[] facialData, byte[] fingerprintData)
             throws NotValidPassportException, PassportBiometricReadingException {
-        MyPassportBiometricScanner passportBiometricScanner = new MyPassportBiometricScanner(passportNumber);
+        StubPassportBiometricScanner passportBiometricScanner = new StubPassportBiometricScanner(passportNumber);
         try {
             passportBiometricScanner.getNifWithOCR(extractedNif);
             passportBiometricScanner.validatePassport();
@@ -138,20 +145,20 @@ public class VotingKiosk {
     }
 
     public void readFaceBiometrics(byte[] faceData) throws HumanBiometricScanningException {
-        MyHumanBiometricScanner humanBiometricScanner = new MyHumanBiometricScanner();
+        StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
         humanBiometricScanner.scanFaceBiometrics(faceData);
     }
 
     public void readFingerPrintBiometrics(byte[] fingerprintData)
             throws NotEnabledException, HumanBiometricScanningException,
             BiometricVerificationFailedException, ConnectException {
-        MyHumanBiometricScanner humanBiometricScanner = new MyHumanBiometricScanner();
+        StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
         humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
         /*TODO: MISSING CODE TO THROW NotEnabledException and ConnectException para indicar que el votante ya ha votado o no está en un colegio electoral que le corresponde.*/
         /*TODO: MISSING CODE TO THROW BiometricVerificationFailedException and HumanBiometricScanningException*/
         BiometricData humanBioD = null;
         BiometricData passpBioD = null;
-        verifiyBiometricData(humanBioD,passpBioD);
+        verifyBiometricData(humanBioD, passpBioD);
     }
 
 

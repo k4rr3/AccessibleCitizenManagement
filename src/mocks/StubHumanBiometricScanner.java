@@ -1,9 +1,9 @@
-package evoting;
+package mocks;
 
 import data.SingleBiometricData;
 import exceptions.HumanBiometricScanningException;
 
-public class MyHumanBiometricScanner implements evoting.biometricdataperipheral.HumanBiometricScanner {
+public class StubHumanBiometricScanner implements evoting.biometricdataperipheral.HumanBiometricScanner {
     @Override
     public SingleBiometricData scanFaceBiometrics(byte[] faceData) throws HumanBiometricScanningException {
         try {

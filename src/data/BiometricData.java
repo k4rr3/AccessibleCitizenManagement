@@ -3,16 +3,24 @@ package data;
 public class BiometricData {
     //Equivalente a una clase Passport
     private SingleBiometricData facialKey;
-    private SingleBiometricData fingerPrintlKey;
+    private SingleBiometricData fingerPrintKey;
 
     public BiometricData(SingleBiometricData facialKey, SingleBiometricData fingerprintKey) {
         this.facialKey = facialKey;
-        this.fingerPrintlKey = fingerprintKey;
+        this.fingerPrintKey = fingerprintKey;
     }
 
     public void deleteAllInfo() {
         facialKey = null;
-        fingerPrintlKey = null;
+        fingerPrintKey = null;
 
+    }
+
+    public SingleBiometricData getFacialKey() {
+        return facialKey;
+    }
+
+    public SingleBiometricData getFingerPrintKey() {
+        return fingerPrintKey;
     }
 }

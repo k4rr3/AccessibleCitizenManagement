@@ -14,6 +14,7 @@ public class StubScrutiny implements Scrutiny {
     private int blankVotes;
 
     private Map<VotingOption, Integer> validPartiesVoteCount;
+    //FiXME: Add exceptions for invalid parties on each method
 
     @Override
     public void initVoteCount(List<VotingOption> validParties) {

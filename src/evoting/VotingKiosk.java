@@ -7,6 +7,10 @@ import data.VotingOption;
 import exceptions.*;
 import mocks.StubHumanBiometricScanner;
 import mocks.StubPassportBiometricScanner;
+import mocks.StubScrutiny;
+import services.ElectoralOrganism;
+import services.LocalService;
+import services.Scrutiny;
 
 import java.util.HashMap;
 import java.util.Scanner;
@@ -23,6 +27,12 @@ public class VotingKiosk {
     private boolean enabledVoter;
     private boolean hasConnectivity;
 
+    // ---------- Services variables -------------
+    private ElectoralOrganism electoralOrganism;
+    private LocalService localService;
+    private Scrutiny scrutiny;
+    // -------------------------------------------
+
     //  ??? The class members
     // ???The constructor/s
     // Input events
@@ -31,8 +41,12 @@ public class VotingKiosk {
     //======================================================================
     private final HashMap<String, String> supportUsers;
 
-    public VotingKiosk(HashMap<String, String> support) {
+    public VotingKiosk(HashMap<String, String> support, Scrutiny scrutiny, LocalService localService, ElectoralOrganism electoralOrganism) {
         this.supportUsers = support;
+
+        this.scrutiny = scrutiny;
+        this.localService = localService;
+        this.electoralOrganism = electoralOrganism;
     }
 
     public void initVoting() {

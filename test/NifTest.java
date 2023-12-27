@@ -1,4 +1,5 @@
 import data.Nif;
+import exceptions.InvalidDNIDocumException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ class NifTest {
 
 
     @Test
-    void testValidNif() {
+    void testValidNif() throws InvalidDNIDocumException {
         nif = new Nif("73214439B");
         assertEquals("73214439B", nif.getNif());
     }

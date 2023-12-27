@@ -19,6 +19,10 @@ public class VotingKiosk {
     private BiometricData humanBioD;
     private BiometricData passpBioD;
     private char explicitConsentGiven = 'n';
+
+    private boolean enabledVoter;
+    private boolean hasConnectivity;
+
     //  ??? The class members
     // ???The constructor/s
     // Input events
@@ -89,7 +93,9 @@ public class VotingKiosk {
 
 
     public void enterNif(Nif nif) throws NotEnabledException, ConnectException {
+        if (nif.equals(this.nif) || ){
 
+        }
     }
 
     public void initOptionsNavigation() {

@@ -4,7 +4,10 @@ import data.BiometricData;
 import data.Nif;
 import data.Password;
 import data.VotingOption;
+import evoting.biometricdataperipheral.HumanBiometricScanner;
+import evoting.biometricdataperipheral.PassportBiometricReader;
 import exceptions.*;
+import mocks.StubElectoralOrganism;
 import mocks.StubHumanBiometricScanner;
 import mocks.StubPassportBiometricScanner;
 import mocks.StubScrutiny;
@@ -22,34 +25,60 @@ public class VotingKiosk {
     private Nif nif;
     private BiometricData humanBioD;
     private BiometricData passpBioD;
+    private byte[] fingerprintData;
+    private byte[] faceData;
+    private String passportNumber;
+    private String extractedNif;
     private char explicitConsentGiven = 'n';
-
+    private char opt;
+    private final HashMap<String, String> supportUsers;
     private boolean enabledVoter;
     private boolean hasConnectivity;
 
-    // ---------- Services variables -------------
+    // ---------- Services variables -----------------------
     private ElectoralOrganism electoralOrganism;
     private LocalService localService;
     private Scrutiny scrutiny;
-    // -------------------------------------------
+
+
+    // -------Biometric Data Peripheral----------------------
+    private HumanBiometricScanner humanBiometricScanner;
+    private PassportBiometricReader passportBiometricReader;
+    // ------------------------------------------------------
 
     //  ??? The class members
     // ???The constructor/s
     // Input events
-    private char opt;
 
-    //======================================================================
-    private final HashMap<String, String> supportUsers;
 
-    public VotingKiosk(HashMap<String, String> support, Scrutiny scrutiny, LocalService localService, ElectoralOrganism electoralOrganism) {
-        this.supportUsers = support;
+    public VotingKiosk(HashMap<String, String> supportUsers) {
+        this.supportUsers = supportUsers;
+    }
 
+    //===============Setters for Dependency Injection==========================
+
+    public void setScrutiny(Scrutiny scrutiny) {
         this.scrutiny = scrutiny;
+    }
+
+    public void setLocalService(LocalService localService) {
         this.localService = localService;
+    }
+
+    public void setElectoralOrganism(ElectoralOrganism electoralOrganism) {
         this.electoralOrganism = electoralOrganism;
     }
 
-    public void initVoting() {
+    public void setHumanBiometricScanner(HumanBiometricScanner humanBiometricScanner) {
+        this.humanBiometricScanner = humanBiometricScanner;
+    }
+
+    public void setPassportBiometricReader(PassportBiometricReader passportBiometricReader) {
+        this.passportBiometricReader = passportBiometricReader;
+    }
+    //======================================================================
+
+    public void initVoting() throws ProceduralException {
         System.out.println("Seleccione la funcionalidad que desea:");
         System.out.println("1- e-voting \n 2- certificado de nacimiento 3- ...");
         Scanner scanner = new Scanner(System.in);
@@ -62,11 +91,30 @@ public class VotingKiosk {
         System.out.println("Acepta el consentimiento explícito del usuario ? \n Sí -> y\n No -> n\n default: n");
         char explicitConsent = scanner.next().charAt(0);
         grantExplicitConsent(explicitConsent);
+        //Todo: hay que llamar a setDocument tras esto?? (porque es la siguiente acción en el DSS)
+        //setDocument(opt)
     }
 
-    public void setDocument(char opt) {
-        this.opt = opt;
-        System.out.println("Solicitando ayuda al personal de soporte...");
+    public void grantExplicitConsent(char cons) throws ProceduralException {
+        if (cons == 'y' || cons == 'n' || cons == 'Y' || cons == 'N') {
+            this.explicitConsentGiven = cons;
+        } else {
+            throw new ProceduralException("Invalid explicit consent option");
+        }
+    }
+
+    public void setDocument(char opt) throws ProceduralException {
+        // check for a valid opt:
+        // 'd' and 'n' stand for dni or nif which mean the same, but both are accepted
+        // 'p' stands for passport
+        if (opt == 'n' || opt == 'd' || opt == 'p') {
+            this.opt = opt;
+            System.out.println("Solicitando ayuda al personal de soporte...");
+        } else {
+            //Todo: shouldn't it be an exception, maybe ProceduralException or what??
+            System.out.println("Incorrect document option was chosen");
+            throw new ProceduralException("Incorrect document option was chosen");
+        }
         //Todo: hay que llamar a enterAccount tras esto?? (porque es la siguiente acción en el DSS)
         //enterAccount(login, pssw)
 
@@ -97,6 +145,7 @@ public class VotingKiosk {
         try {
             nif = new Nif("a");
             // Assuming you have biometric data available
+            //fixme: scanners shouldn't be used here!! due to DSS manual verification
             StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
             StubPassportBiometricScanner passportBiometricScanner = new StubPassportBiometricScanner("sample");
             //TODO: Comprobar identidad con HumanBiometricScanner y PassportBiometricScanner ???
@@ -107,15 +156,15 @@ public class VotingKiosk {
     }
 
 
-    public void enterNif(Nif nif) throws NotEnabledException, ConnectException {
+    public void enterNif() throws NotEnabledException, ConnectException {
         //Todo: Checkear porque pone que el personal de soporte introduce manualmente el NIF
-        if (nif.equals(this.nif) || enabledVoter){
-            if(hasConnectivity){
+        if (nif.equals(this.nif) || enabledVoter) {
+            if (hasConnectivity) {
                 System.out.println("Successful nif insertion");
-            }else{
+            } else {
                 throw new ConnectException("Voter is in has connectivity issues");
             }
-        }else{
+        } else {
             throw new NotEnabledException("Voter hasn't got a valid nif or is not enabled to vote");
         }
     }
@@ -141,7 +190,7 @@ public class VotingKiosk {
     }
 
     /*=================================================================================*/
-    private void verifyBiometricData(BiometricData humanBioD, BiometricData passpBioD)
+    private void verifyBiometricData()
             throws BiometricVerificationFailedException {
         if (!humanBioD.equals(passpBioD)) {
             removeBiometricData();
@@ -155,39 +204,45 @@ public class VotingKiosk {
         passpBioD.deleteAllInfo();
     }
 
-    /*=================================================================================*/
-    public void grantExplicitConsent(char cons) {
-        this.explicitConsentGiven = cons;
-    }
+    /*====================VERIFICACIÓN BIOMÉTRICA=========================================*/
 
-    public void readPassport(String passportNumber, String extractedNif, byte[] facialData, byte[] fingerprintData)
-            throws NotValidPassportException, PassportBiometricReadingException {
-        StubPassportBiometricScanner passportBiometricScanner = new StubPassportBiometricScanner(passportNumber);
-        try {
-            passportBiometricScanner.getNifWithOCR(extractedNif);
-            passportBiometricScanner.validatePassport();
-        } catch (Exception e) {
-            throw new NotValidPassportException(e.getMessage());
-        }
-        passportBiometricScanner.getPassportBiometricData(facialData, fingerprintData);
+
+    public void readPassport()
+            throws NotValidPassportException, PassportBiometricReadingException, InvalidDNIDocumException {
+        passportBiometricReader = new StubPassportBiometricScanner(passportNumber);
+        passportBiometricReader.validatePassport();
+        passportBiometricReader.getPassportBiometricData(faceData, fingerprintData);
+        passportBiometricReader.getNifWithOCR(extractedNif);
+
 
     }
 
-    public void readFaceBiometrics(byte[] faceData) throws HumanBiometricScanningException {
-        StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
+
+    public void readFaceBiometrics() throws HumanBiometricScanningException {
+        humanBiometricScanner = new StubHumanBiometricScanner();
         humanBiometricScanner.scanFaceBiometrics(faceData);
     }
 
-    public void readFingerPrintBiometrics(byte[] fingerprintData)
+    public void readFingerPrintBiometrics()
             throws NotEnabledException, HumanBiometricScanningException,
             BiometricVerificationFailedException, ConnectException {
-        StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
-        humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
-        /*TODO: MISSING CODE TO THROW NotEnabledException and ConnectException para indicar que el votante ya ha votado o no está en un colegio electoral que le corresponde.*/
-        /*TODO: MISSING CODE TO THROW BiometricVerificationFailedException and HumanBiometricScanningException*/
-        BiometricData humanBioD = null;
-        BiometricData passpBioD = null;
-        verifyBiometricData(humanBioD, passpBioD);
+        if (hasConnectivity) {
+            if (enabledVoter) {
+                humanBiometricScanner = new StubHumanBiometricScanner();
+                electoralOrganism = new StubElectoralOrganism();
+                humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
+                BiometricData humanBioD = null;
+                BiometricData passpBioD = null;
+                verifyBiometricData();
+                removeBiometricData();
+                electoralOrganism.canVote(nif);
+            } else {
+                throw new NotEnabledException("Voter is not enabled to vote");
+            }
+        } else {
+            throw new ConnectException("We're experiencing connectivity issues");
+        }
+
     }
 
 

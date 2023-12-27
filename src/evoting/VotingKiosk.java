@@ -40,7 +40,7 @@ public class VotingKiosk {
         System.out.println("1- e-voting \n 2- certificado de nacimiento 3- ...");
         Scanner scanner = new Scanner(System.in);
         int option = scanner.nextInt();
-        if (option == 0) {
+        if (option == 0 || option > 4) {
             System.out.println("opción no válida");
         } else {
             System.out.println("funcionalidad e-voting seleccionada");
@@ -53,6 +53,7 @@ public class VotingKiosk {
     public void setDocument(char opt) {
         this.opt = opt;
         System.out.println("Solicitando ayuda al personal de soporte...");
+        //Todo: hay que llamar a enterAccount tras esto?? (porque es la siguiente acción en el DSS)
         //enterAccount(login, pssw)
 
     }
@@ -93,8 +94,15 @@ public class VotingKiosk {
 
 
     public void enterNif(Nif nif) throws NotEnabledException, ConnectException {
-        if (nif.equals(this.nif) || ){
-
+        //Todo: Checkear porque pone que el personal de soporte introduce manualmente el NIF
+        if (nif.equals(this.nif) || enabledVoter){
+            if(hasConnectivity){
+                System.out.println("Successful nif insertion");
+            }else{
+                throw new ConnectException("Voter is in has connectivity issues");
+            }
+        }else{
+            throw new NotEnabledException("Voter hasn't got a valid nif or is not enabled to vote");
         }
     }
 
@@ -113,6 +121,7 @@ public class VotingKiosk {
     // Internal operation, not required
     private void finalizeSession() {
         {
+            System.out.println("Not implemented yet, but finalize session has been invoked");
         }
         //(...) Setter methods for injecting dependences and additional methods
     }

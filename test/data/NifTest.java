@@ -1,3 +1,5 @@
+package data;
+
 import data.Nif;
 import exceptions.InvalidDNIDocumException;
 import org.junit.jupiter.api.BeforeEach;

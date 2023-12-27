@@ -9,11 +9,12 @@ import java.util.Map;
 
 public class StubScrutiny implements Scrutiny {
 
-    private int totalVotes;
+    private int totalValidVotes;
     private int nullVotes;
     private int blankVotes;
 
     private Map<VotingOption, Integer> validPartiesVoteCount;
+
     //FiXME: Add exceptions for invalid parties on each method
 
     @Override
@@ -24,18 +25,31 @@ public class StubScrutiny implements Scrutiny {
             validPartiesVoteCount.put(party, 0);
         }
 
-        totalVotes = 0;
+        totalValidVotes = 0;
         nullVotes = 0;
         blankVotes = 0;
     }
 
     @Override
     public void scrutinize(VotingOption vopt) {
-        if(validPartiesVoteCount.containsKey(vopt)){
+
+        // Null representa la papeleta vacia por tanto voto en blanco
+        if(vopt == null) {
+            blankVotes++;
+        }
+
+        // La papeleta contiene un partido politico valido, se suma como voto al partido selecionado
+        else if(validPartiesVoteCount.containsKey(vopt)){
             int partyVoteCount = validPartiesVoteCount.get(vopt);
             validPartiesVoteCount.put(vopt, partyVoteCount + 1); // add one vote to the valid party
-        } else {
+
+            totalValidVotes++;
+        }
+
+        // La papeleta contiene un partido politico invalido, se suma como voto nulo
+        else {
             System.out.println("Invalid voting option: " + vopt);
+            nullVotes++;
         }
     }
 
@@ -51,7 +65,7 @@ public class StubScrutiny implements Scrutiny {
 
     @Override
     public int getTotal() {
-        return totalVotes;
+        return totalValidVotes;
     }
 
     @Override
@@ -74,5 +88,6 @@ public class StubScrutiny implements Scrutiny {
         // Display the number of blank and null votes
         System.out.println("Blank Votes: " + blankVotes);
         System.out.println("Null Votes: " + nullVotes);
+        System.out.println("Total Valid Votes: " + totalValidVotes);
     }
 }

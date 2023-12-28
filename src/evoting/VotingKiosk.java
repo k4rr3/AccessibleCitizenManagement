@@ -7,10 +7,6 @@ import data.VotingOption;
 import evoting.biometricdataperipheral.HumanBiometricScanner;
 import evoting.biometricdataperipheral.PassportBiometricReader;
 import exceptions.*;
-import mocks.StubElectoralOrganism;
-import mocks.StubHumanBiometricScanner;
-import mocks.StubPassportBiometricScanner;
-import mocks.StubScrutiny;
 import services.ElectoralOrganism;
 import services.LocalService;
 import services.Scrutiny;
@@ -41,7 +37,8 @@ public class VotingKiosk {
     private PassportBiometricReader passportBiometricReader;
     // ------------------------------------------------------
 
-    private int proceduralStep;
+    private int manualProcedureStep;
+    private int biomProcedureStep;
 
     private final Scanner scanner;
 
@@ -52,7 +49,7 @@ public class VotingKiosk {
 
     public VotingKiosk(HashMap<String, String> supportUsers) {
         this.supportUsers = supportUsers;
-        this.proceduralStep = 1;
+        this.manualProcedureStep = 1;
         this.scanner = new Scanner(System.in);
     }
 
@@ -86,29 +83,6 @@ public class VotingKiosk {
         return nif;
     }
 
-    public BiometricData getHumanBioD() {
-        return humanBioD;
-    }
-
-    public BiometricData getPasspBioD() {
-        return passpBioD;
-    }
-
-    public byte[] getFingerprintData() {
-        return fingerprintData;
-    }
-
-    public byte[] getFaceData() {
-        return faceData;
-    }
-
-    public String getPassportNumber() {
-        return passportNumber;
-    }
-
-    public String getExtractedNif() {
-        return extractedNif;
-    }
 
     public char getOpt() {
         return opt;
@@ -149,7 +123,7 @@ public class VotingKiosk {
     //======================================================================
 
     public void initVoting() throws ProceduralException {
-        if (proceduralStep != 1) throw new ProceduralException("Voting procedure has already been started");
+        if (manualProcedureStep != 1) throw new ProceduralException("Voting procedure has already been started");
         System.out.println("Seleccione la funcionalidad que desea:");
         System.out.println("1- e-voting \n 2- certificado de nacimiento 3- ...");
         Scanner scanner = new Scanner(System.in);
@@ -160,13 +134,13 @@ public class VotingKiosk {
             System.out.println("funcionalidad e-voting seleccionada");
         }
         System.out.println("Acepta el consentimiento explícito del usuario ? \n Sí -> y\n No -> n\n default: n");
-        proceduralStep++;
+        manualProcedureStep++;
 
     }
 
 
     public void setDocument(char opt) throws ProceduralException {
-        if (proceduralStep != 2) throw new ProceduralException("Voting procedure has already been started");
+        if (manualProcedureStep != 2) throw new ProceduralException("Voting procedure has already been started");
         // check for a valid opt:
         // 'd' and 'n' stand for dni or nif which mean the same, but both are accepted
         // 'p' stands for passport
@@ -174,32 +148,34 @@ public class VotingKiosk {
         if (opt == 'n' || opt == 'd') {
             this.opt = opt;
             System.out.println("Solicitando ayuda al personal de soporte...");
+            manualProcedureStep++;
         } else if (opt == 'p') {
             char explicitConsent = scanner.next().charAt(0);
             grantExplicitConsent(explicitConsent);
+            biomProcedureStep++;
         } else {
             throw new ProceduralException("Incorrect document option was chosen");
         }
     }
 
     public void grantExplicitConsent(char cons) throws ProceduralException {
-        if (proceduralStep != 2) throw new ProceduralException("Some procedures went wrong");
+        if (biomProcedureStep != 9999) throw new ProceduralException("Some procedures went wrong");
         if (cons == 'y' || cons == 'n' || cons == 'Y' || cons == 'N') {
             this.explicitConsentGiven = cons;
+            biomProcedureStep++;
         } else {
             throw new ProceduralException("Invalid explicit consent option");
         }
     }
 
     public void enterAccount(String login, Password pssw) throws InvalidAccountException, ProceduralException {
-        if (proceduralStep != 2) throw new ProceduralException("Some procedures went wrong");
+        if (manualProcedureStep != 3) throw new ProceduralException("Some procedures went wrong");
         if (this.opt == 'n' || this.opt == 'd') {
             //Estamos en el primer DSS
             System.out.println("Verifying account...");
             localService.verifyAccount(login, pssw);
             System.out.println("Account successfully verified");
-        } else {
-            //Estamos en el segundo DSS
+            manualProcedureStep++;
         }
 
     }
@@ -207,23 +183,24 @@ public class VotingKiosk {
 
     public void confirmIdentif(char conf) throws InvalidDNIDocumException, ProceduralException {
         if (this.opt == 'n' || this.opt == 'd') {
+            if (manualProcedureStep != 4) throw new ProceduralException("Some procedures went wrong");
             if (conf == 'F') throw new InvalidDNIDocumException("Unconfirmed identity");
-
+            System.out.println("Identity has been successfully confirmed");
+            manualProcedureStep++;
         } else throw new ProceduralException("Wrong identification method");
     }
 
 
-    public void enterNif() throws NotEnabledException, ConnectException {
-        //Todo: Checkear porque pone que el personal de soporte introduce manualmente el NIF
-        if (nif.equals(this.nif) || enabledVoter) {
-            if (hasConnectivity) {
-                System.out.println("Successful nif insertion");
-            } else {
-                throw new ConnectException("Voter is in has connectivity issues");
-            }
-        } else {
-            throw new NotEnabledException("Voter hasn't got a valid nif or is not enabled to vote");
-        }
+    public void enterNif(Nif nif) throws NotEnabledException, ConnectException, ProceduralException {
+        if (this.opt == 'n' || this.opt == 'd') {
+            if (manualProcedureStep != 5) throw new ProceduralException("Some procedures went wrong");
+            this.nif = nif;
+            System.out.println("NIF is ok, now let's check vote's right");
+            electoralOrganism.canVote(nif);
+            System.out.println("Citizen can vote");
+            manualProcedureStep++;
+        }throw new ProceduralException("Wrong identification method");
+
     }
 
     public void initOptionsNavigation() {
@@ -236,6 +213,7 @@ public class VotingKiosk {
     }
 
     public void confirmVotingOption(char conf) throws ConnectException {
+
     }
 
     // Internal operation, not required

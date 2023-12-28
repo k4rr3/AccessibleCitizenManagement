@@ -5,8 +5,10 @@ import exceptions.ConnectException;
 import exceptions.NotEnabledException;
 import services.ElectoralOrganism;
 
-public class StubElectoralOrganism implements ElectoralOrganism {
+import java.util.HashMap;
 
+public class StubElectoralOrganism implements ElectoralOrganism {
+    private HashMap<Nif, Boolean> enabledVoter;
     private boolean voterEnabled = true; //turn to false when voter has already voted or is in an incorrect electoral college
     private boolean hasConnectivity = true;
 

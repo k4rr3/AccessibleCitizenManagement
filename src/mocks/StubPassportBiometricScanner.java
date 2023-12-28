@@ -24,15 +24,15 @@ public class StubPassportBiometricScanner implements PassportBiometricReader {
     }
 
     @Override
-    public Nif getNifWithOCR(String extractedNif) throws InvalidDNIDocumException {
-        return new Nif(extractedNif);
+    public Nif getNifWithOCR() throws InvalidDNIDocumException {
+        return new Nif("fakeNif");
     }
 
     @Override
-    public BiometricData getPassportBiometricData(byte[] facialData, byte[] fingerprintData) throws PassportBiometricReadingException {
+    public BiometricData getPassportBiometricData() throws PassportBiometricReadingException {
         try {
-            SingleBiometricData facialBiomData = new SingleBiometricData(facialData);
-            SingleBiometricData fingerprintBiomData = new SingleBiometricData(fingerprintData);
+            SingleBiometricData facialBiomData = new SingleBiometricData(new byte[]{0x00,0x42});
+            SingleBiometricData fingerprintBiomData = new SingleBiometricData(new byte[]{0x01,0x02});
             return new BiometricData(facialBiomData, fingerprintBiomData);
         } catch (Exception e) {
             throw new PassportBiometricReadingException("Error reading passport biometric data");

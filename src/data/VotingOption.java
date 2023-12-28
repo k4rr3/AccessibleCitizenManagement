@@ -18,13 +18,11 @@ final public class VotingOption {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals (Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VotingOption vO = (VotingOption) o;
-        //return party.equals(niff.party);
-
-        return (vO.party.equals(this.party));
+        return party.equals(vO.party);
     }
 
     @Override

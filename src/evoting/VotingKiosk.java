@@ -23,12 +23,7 @@ import java.util.Scanner;
  */
 public class VotingKiosk {
     private Nif nif;
-    private BiometricData humanBioD;
-    private BiometricData passpBioD;
-    private byte[] fingerprintData;
-    private byte[] faceData;
-    private String passportNumber;
-    private String extractedNif;
+
     private char explicitConsentGiven = 'n';
     private char opt;
     private final HashMap<String, String> supportUsers;
@@ -46,6 +41,10 @@ public class VotingKiosk {
     private PassportBiometricReader passportBiometricReader;
     // ------------------------------------------------------
 
+    private int proceduralStep;
+
+    private final Scanner scanner;
+
     //  ??? The class members
     // ???The constructor/s
     // Input events
@@ -53,6 +52,8 @@ public class VotingKiosk {
 
     public VotingKiosk(HashMap<String, String> supportUsers) {
         this.supportUsers = supportUsers;
+        this.proceduralStep = 1;
+        this.scanner = new Scanner(System.in);
     }
 
     //===============Setters for Dependency Injection==========================
@@ -79,6 +80,7 @@ public class VotingKiosk {
     //======================================================================
 
     public void initVoting() throws ProceduralException {
+        if (proceduralStep != 1) throw new ProceduralException("Voting procedure has already been started");
         System.out.println("Seleccione la funcionalidad que desea:");
         System.out.println("1- e-voting \n 2- certificado de nacimiento 3- ...");
         Scanner scanner = new Scanner(System.in);
@@ -89,13 +91,30 @@ public class VotingKiosk {
             System.out.println("funcionalidad e-voting seleccionada");
         }
         System.out.println("Acepta el consentimiento explícito del usuario ? \n Sí -> y\n No -> n\n default: n");
-        char explicitConsent = scanner.next().charAt(0);
-        grantExplicitConsent(explicitConsent);
-        //Todo: hay que llamar a setDocument tras esto?? (porque es la siguiente acción en el DSS)
-        //setDocument(opt)
+        proceduralStep++;
+
+    }
+
+
+    public void setDocument(char opt) throws ProceduralException {
+        if (proceduralStep != 2) throw new ProceduralException("Voting procedure has already been started");
+        // check for a valid opt:
+        // 'd' and 'n' stand for dni or nif which mean the same, but both are accepted
+        // 'p' stands for passport
+
+        if (opt == 'n' || opt == 'd') {
+            this.opt = opt;
+            System.out.println("Solicitando ayuda al personal de soporte...");
+        } else if (opt == 'p') {
+            char explicitConsent = scanner.next().charAt(0);
+            grantExplicitConsent(explicitConsent);
+        } else {
+            throw new ProceduralException("Incorrect document option was chosen");
+        }
     }
 
     public void grantExplicitConsent(char cons) throws ProceduralException {
+        if (proceduralStep != 2) throw new ProceduralException("Some procedures went wrong");
         if (cons == 'y' || cons == 'n' || cons == 'Y' || cons == 'N') {
             this.explicitConsentGiven = cons;
         } else {
@@ -103,49 +122,30 @@ public class VotingKiosk {
         }
     }
 
-    public void setDocument(char opt) throws ProceduralException {
-        // check for a valid opt:
-        // 'd' and 'n' stand for dni or nif which mean the same, but both are accepted
-        // 'p' stands for passport
-        if (opt == 'n' || opt == 'd' || opt == 'p') {
-            this.opt = opt;
-            System.out.println("Solicitando ayuda al personal de soporte...");
-        } else {
-            //Todo: shouldn't it be an exception, maybe ProceduralException or what??
-            System.out.println("Incorrect document option was chosen");
-            throw new ProceduralException("Incorrect document option was chosen");
+    public void enterAccount(String login, Password pssw) throws InvalidAccountException, ProceduralException{
+        if (proceduralStep != 2) throw new ProceduralException("Some procedures went wrong");
+        if(this.opt == 'n'||this.opt == 'd'){
+            //Estamos en el primer DSS
+            System.out.println("Verifying account...");
+            localService.verifyAccount(login, pssw);
+            System.out.println("Account successfully verified");
+        }else{
+            //Estamos en el segundo DSS
         }
-        //Todo: hay que llamar a enterAccount tras esto?? (porque es la siguiente acción en el DSS)
-        //enterAccount(login, pssw)
 
     }
 
-    //TODO: NO ES LO MISMO StubLocalService que la función enterAccount de VotingKiosk ???
-    public void enterAccount(String login, Password pssw) throws InvalidAccountException {
-        if (supportUsers.containsKey(login)) {
-            // Check if the provided password matches the stored password
-            String storedPassword = supportUsers.get(login);
-            if (pssw != null && pssw.getPassword().equals(storedPassword)) {
-                System.out.println("Authentication successful. Welcome, " + login + "!");
-            } else {
-                throw new InvalidAccountException("Authentication failed. Incorrect password.");
-            }
-        } else {
-            throw new InvalidAccountException("Authentication failed. User not found.");
-        }
-    }
 
+    public void confirmIdentif(char conf) throws InvalidDNIDocumException, ProceduralException{
+        if(this.opt == 'n'||this.opt == 'd') {
 
-    public void confirmIdentif(char conf) throws InvalidDNIDocumException {
-        if (explicitConsentGiven == 'n') {
-            System.out.println("Explicit consent not given. Cannot confirm identification.");
-            return;
         }
 
         try {
             nif = new Nif("a");
             // Assuming you have biometric data available
             //fixme: scanners shouldn't be used here!! due to DSS manual verification
+            humanBiometricScanner.
             StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
             StubPassportBiometricScanner passportBiometricScanner = new StubPassportBiometricScanner("sample");
             //TODO: Comprobar identidad con HumanBiometricScanner y PassportBiometricScanner ???
@@ -209,17 +209,15 @@ public class VotingKiosk {
 
     public void readPassport()
             throws NotValidPassportException, PassportBiometricReadingException, InvalidDNIDocumException {
-        passportBiometricReader = new StubPassportBiometricScanner(passportNumber);
         passportBiometricReader.validatePassport();
-        passportBiometricReader.getPassportBiometricData(faceData, fingerprintData);
-        passportBiometricReader.getNifWithOCR(extractedNif);
+        passportBiometricReader.getPassportBiometricData();
+        passportBiometricReader.getNifWithOCR();
 
 
     }
 
 
     public void readFaceBiometrics() throws HumanBiometricScanningException {
-        humanBiometricScanner = new StubHumanBiometricScanner();
         humanBiometricScanner.scanFaceBiometrics(faceData);
     }
 
@@ -228,8 +226,6 @@ public class VotingKiosk {
             BiometricVerificationFailedException, ConnectException {
         if (hasConnectivity) {
             if (enabledVoter) {
-                humanBiometricScanner = new StubHumanBiometricScanner();
-                electoralOrganism = new StubElectoralOrganism();
                 humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
                 BiometricData humanBioD = null;
                 BiometricData passpBioD = null;

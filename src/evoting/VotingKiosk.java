@@ -191,37 +191,25 @@ public class VotingKiosk {
         }
     }
 
-    public void enterAccount(String login, Password pssw) throws InvalidAccountException, ProceduralException{
+    public void enterAccount(String login, Password pssw) throws InvalidAccountException, ProceduralException {
         if (proceduralStep != 2) throw new ProceduralException("Some procedures went wrong");
-        if(this.opt == 'n'||this.opt == 'd'){
+        if (this.opt == 'n' || this.opt == 'd') {
             //Estamos en el primer DSS
             System.out.println("Verifying account...");
             localService.verifyAccount(login, pssw);
             System.out.println("Account successfully verified");
-        }else{
+        } else {
             //Estamos en el segundo DSS
         }
 
     }
 
 
-    public void confirmIdentif(char conf) throws InvalidDNIDocumException, ProceduralException{
-        if(this.opt == 'n'||this.opt == 'd') {
+    public void confirmIdentif(char conf) throws InvalidDNIDocumException, ProceduralException {
+        if (this.opt == 'n' || this.opt == 'd') {
+            if (conf == 'F') throw new InvalidDNIDocumException("Unconfirmed identity");
 
-        }
-
-        try {
-            nif = new Nif("a");
-            // Assuming you have biometric data available
-            //fixme: scanners shouldn't be used here!! due to DSS manual verification
-            humanBiometricScanner.
-            StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
-            StubPassportBiometricScanner passportBiometricScanner = new StubPassportBiometricScanner("sample");
-            //TODO: Comprobar identidad con HumanBiometricScanner y PassportBiometricScanner ???
-            System.out.println("Biometric data verification successful. Identification confirmed.");
-        } catch (InvalidDNIDocumException e) {
-            throw new InvalidDNIDocumException("Biometric data verification failed. Identification not confirmed.");
-        }
+        } else throw new ProceduralException("Wrong identification method");
     }
 
 

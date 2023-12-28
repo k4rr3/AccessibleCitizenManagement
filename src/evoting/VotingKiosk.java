@@ -41,6 +41,8 @@ public class VotingKiosk {
     private PassportBiometricReader passportBiometricReader;
     // ------------------------------------------------------
 
+    private VotingOption votingOption;
+
     private int proceduralStep;
 
     private final Scanner scanner;
@@ -191,22 +193,22 @@ public class VotingKiosk {
         }
     }
 
-    public void enterAccount(String login, Password pssw) throws InvalidAccountException, ProceduralException{
+    public void enterAccount(String login, Password pssw) throws InvalidAccountException, ProceduralException {
         if (proceduralStep != 2) throw new ProceduralException("Some procedures went wrong");
-        if(this.opt == 'n'||this.opt == 'd'){
+        if (this.opt == 'n' || this.opt == 'd') {
             //Estamos en el primer DSS
             System.out.println("Verifying account...");
             localService.verifyAccount(login, pssw);
             System.out.println("Account successfully verified");
-        }else{
+        } else {
             //Estamos en el segundo DSS
         }
 
     }
 
 
-    public void confirmIdentif(char conf) throws InvalidDNIDocumException, ProceduralException{
-        if(this.opt == 'n'||this.opt == 'd') {
+    public void confirmIdentif(char conf) throws InvalidDNIDocumException, ProceduralException {
+        if (this.opt == 'n' || this.opt == 'd') {
 
         }
 
@@ -215,7 +217,7 @@ public class VotingKiosk {
             // Assuming you have biometric data available
             //fixme: scanners shouldn't be used here!! due to DSS manual verification
             humanBiometricScanner.
-            StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
+                    StubHumanBiometricScanner humanBiometricScanner = new StubHumanBiometricScanner();
             StubPassportBiometricScanner passportBiometricScanner = new StubPassportBiometricScanner("sample");
             //TODO: Comprobar identidad con HumanBiometricScanner y PassportBiometricScanner ???
             System.out.println("Biometric data verification successful. Identification confirmed.");
@@ -239,15 +241,27 @@ public class VotingKiosk {
     }
 
     public void initOptionsNavigation() {
+        System.out.println("Desplegando menús y opciones de voto.....");
     }
 
     public void consultVotingOption(VotingOption vopt) {
+        this.votingOption = vopt;
     }
 
     public void vote() {
+
     }
 
     public void confirmVotingOption(char conf) throws ConnectException {
+        if (hasConnectivity) {
+            if (conf == 's') {
+                System.out.println("Confirmando opción de voto: " + votingOption.getParty());
+            } else if (conf == 'n') {
+                System.out.println("Rechazando la opción de voto: " + votingOption.getParty());
+            }
+        }else{
+            throw new ConnectException("No tienes conectividad");
+        }
     }
 
     // Internal operation, not required

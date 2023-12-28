@@ -88,28 +88,12 @@ public class VotingKiosk {
         return nif;
     }
 
-    public BiometricData getHumanBioD() {
-        return humanBioD;
+    public VotingOption getVotingOption() {
+        return votingOption;
     }
 
-    public BiometricData getPasspBioD() {
-        return passpBioD;
-    }
-
-    public byte[] getFingerprintData() {
-        return fingerprintData;
-    }
-
-    public byte[] getFaceData() {
-        return faceData;
-    }
-
-    public String getPassportNumber() {
-        return passportNumber;
-    }
-
-    public String getExtractedNif() {
-        return extractedNif;
+    public int getProceduralStep() {
+        return proceduralStep;
     }
 
     public char getOpt() {
@@ -245,21 +229,31 @@ public class VotingKiosk {
     }
 
     public void consultVotingOption(VotingOption vopt) {
+        System.out.println("Mostrando información del partido " + vopt.getParty());
         this.votingOption = vopt;
     }
 
     public void vote() {
+        System.out.println("Votando por " + votingOption.getParty());
 
+        System.out.println("Mostrando pantalla de confirmación de voto");
     }
 
     public void confirmVotingOption(char conf) throws ConnectException {
         if (hasConnectivity) {
             if (conf == 's') {
                 System.out.println("Confirmando opción de voto: " + votingOption.getParty());
+                System.out.println("Voto en proceso....");
+                StubScrutiny stubScrutiny = new StubScrutiny();
+                stubScrutiny.scrutinize(votingOption);
+                System.out.println("voto escrutado");
+                StubElectoralOrganism stubElectoralOrganism = new StubElectoralOrganism();
+                stubElectoralOrganism.disableVoter(nif);
+                System.out.println("OK voto emitido");
             } else if (conf == 'n') {
                 System.out.println("Rechazando la opción de voto: " + votingOption.getParty());
             }
-        }else{
+        } else {
             throw new ConnectException("No tienes conectividad");
         }
     }

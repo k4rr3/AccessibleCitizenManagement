@@ -97,19 +97,29 @@ public class VotingKiosk {
     }
 
 
+    public int option;
+
+    public void setOption(int option) {
+        this.option = option;
+    }
     //======================================================================
 
+    //test:
+    //proceduralException step -> llamar a funcion antes de initVoting x ej
+    //options
     public void initVoting() throws ProceduralException {
         checkManualStep(1);
         checkBiomStep(1);
         System.out.println("Seleccione la funcionalidad que desea:");
-        System.out.println("1- e-voting \n 2- certificado de nacimiento 3- ...");
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
-        if (option == 0 || option > 4) {
-            System.out.println("opción no válida");
+        System.out.println("1- e-voting \n2- certificado de nacimiento\n3- (otras opciones)");
+        //Para facilitar la prueba de los test, se introduce la option con un setter para emular el Stdin
+        /*Scanner scanner = new Scanner(System.in);
+        int option = scanner.nextInt();*/
+        if (this.option == 0 || this.option > 4) {
+            System.out.println("opción no válida:" + option);
+            throw new ProceduralException("Opción no válida");
         } else {
-            System.out.println("funcionalidad e-voting seleccionada");
+            System.out.println("Funcionalidad correctamente seleccionada");
         }
         incManualStep();
         incBiomStep();

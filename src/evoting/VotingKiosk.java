@@ -33,6 +33,8 @@ public class VotingKiosk {
 
 
     // -------Biometric Data Peripheral----------------------
+
+    //Todo: No se si es mejor poner aqui stub o añadir el metodo getBiometricData en la interfaz HumanBiom... y PassportBiom...
     private StubHumanBiometricScanner humanBiometricScanner;
     private StubPassportBiometricReader passportBiometricReader;
     // ------------------------------------------------------

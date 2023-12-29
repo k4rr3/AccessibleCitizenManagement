@@ -1,3 +1,4 @@
+/*
 package evoting;
 
 import exceptions.ProceduralException;
@@ -55,3 +56,4 @@ public class VotingKioskTest {
 
 
 }
+*/

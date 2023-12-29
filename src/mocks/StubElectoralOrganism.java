@@ -19,18 +19,19 @@ public class StubElectoralOrganism implements ElectoralOrganism {
             e.printStackTrace();
         }
     }};
-    private boolean voterEnabled = true; //turn to false when voter has already voted or is in an incorrect electoral college
+
+
     private boolean serverIsUp = true;
+
+    public void setServerIsUp(boolean serverIsUp) {
+        this.serverIsUp = serverIsUp;
+    }
 
     @Override
     public void canVote(Nif nif) throws NotEnabledException, ConnectException {
         // Check if the voter is enabled to vote
-        if (voterEnabled) {
-            // Additional conditions for eligibility to vote can be added here
-            // For example, check if the voter is in the correct electoral college
-            // ...
+        if (enabledVoter.containsKey(nif) && enabledVoter.get(nif)) {
             if (serverIsUp) {
-
 
                 // If all conditions are met, the voter can vote
                 System.out.println("Voter with NIF " + nif.getNif() + " is eligible to vote.");
@@ -47,11 +48,10 @@ public class StubElectoralOrganism implements ElectoralOrganism {
         // Simulate disabling the voter (mark them as voted)
         if (serverIsUp) {
             System.out.println("Voter with NIF " + nif.getNif() + " has voted. Disabling voter.");
-
-            // Set the voter as disabled
-            voterEnabled = false;
+            enabledVoter.put(nif, false);
         } else {
             throw new ConnectException("No connectivity detected");
         }
     }
+
 }

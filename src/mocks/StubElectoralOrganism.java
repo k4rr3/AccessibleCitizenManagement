@@ -8,7 +8,7 @@ import services.ElectoralOrganism;
 import java.util.HashMap;
 
 public class StubElectoralOrganism implements ElectoralOrganism {
-    private 
+
     private HashMap<Nif, Boolean> enabledVoter = new HashMap<>() {{
         try {
             put(new Nif("48285883Y"), true);

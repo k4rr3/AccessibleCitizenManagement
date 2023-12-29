@@ -52,7 +52,6 @@ public class VotingKiosk {
     public VotingKiosk() {
         this.manualProcedureStep = 1;
         this.scanner = new Scanner(System.in);
-        scrutiny.initVoteCount();
     }
 
     //==============Procedural Counters & Methods==============================
@@ -214,15 +213,18 @@ public class VotingKiosk {
     public void confirmVotingOption(char conf) throws ConnectException, ProceduralException {
         checkManualStep(9);
         checkBiomStep(12);
-        if (conf == 's') {
+        if (conf == 'y' || conf == 'Y') {
             System.out.println("Confirmando opción de voto: " + votingOption.getParty());
             System.out.println("Voto en proceso....");
             scrutiny.scrutinize(votingOption);
             System.out.println("voto escrutado");
             electoralOrganism.disableVoter(nif);
-            System.out.println("OK voto emitido");
-        } else if (conf == 'n') {
+            System.out.println("Votante deshabilitado correctamente");
+            finalizeSession();
+            System.out.println("Mostrando pantalla inicial...");
+        } else if (conf == 'n' || conf == 'N') {
             System.out.println("Rechazando la opción de voto: " + votingOption.getParty());
+            throw new ProceduralException("La opción de voto ha sido rechazada");
         }
         incManualStep();
         incBiomStep();

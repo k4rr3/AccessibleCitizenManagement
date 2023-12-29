@@ -130,9 +130,8 @@ public class VotingKiosk {
         if (this.option == 0 || this.option > 4) {
             System.out.println("opción no válida:" + option);
             throw new ProceduralException("Opción no válida");
-        } else {
-            System.out.println("Funcionalidad correctamente seleccionada");
         }
+        System.out.println("Funcionalidad correctamente seleccionada");
         incManualStep();
         incBiomStep();
 
@@ -266,52 +265,58 @@ public class VotingKiosk {
 
 
     /*=================================================================================*/
-//    private void verifyBiometricData() throws BiometricVerificationFailedException {
-//        if (!humanBioD.equals(passpBioD)) {
-//            removeBiometricData();
-//            throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
-//        }
-//
-//    }
-//
-//    private void removeBiometricData() {
-//        humanBioD.deleteAllInfo();
-//        passpBioD.deleteAllInfo();
-//    }
-//
-//    *//*====================VERIFICACIÓN BIOMÉTRICA=========================================*//*
-//
-//
-//    public void readPassport() throws NotValidPassportException, PassportBiometricReadingException, InvalidDNIDocumException {
-//        passportBiometricReader.validatePassport();
-//        passportBiometricReader.getPassportBiometricData();
-//        passportBiometricReader.getNifWithOCR();
-//
-//
-//    }
-//
-//
-//    public void readFaceBiometrics() throws HumanBiometricScanningException {
-//        humanBiometricScanner.scanFaceBiometrics(faceData);
-//    }
-//
-//    public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException {
-//        if (hasConnectivity) {
-//            if (enabledVoter) {
-//                humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
-//                BiometricData humanBioD = null;
-//                BiometricData passpBioD = null;
-//                verifyBiometricData();
-//                removeBiometricData();
-//                electoralOrganism.canVote(nif);
-//            } else {
-//                throw new NotEnabledException("Voter is not enabled to vote");
-//            }
-//        } else {
-//            throw new ConnectException("We're experiencing connectivity issues");
-//        }
-//
-//    }
+    private void verifyBiometricData() throws BiometricVerificationFailedException {
+        if (!humanBioD.equals(passpBioD)) {
+            removeBiometricData();
+            throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
+        }
+
+    }
+
+    private void removeBiometricData() {
+        humanBioD.deleteAllInfo();
+        passpBioD.deleteAllInfo();
+    }
+
+    *//*====================VERIFICACIÓN BIOMÉTRICA=========================================*//*
+
+
+    public void readPassport() throws NotValidPassportException, PassportBiometricReadingException, InvalidDNIDocumException, ProceduralException {
+        checkBiomStep(4);
+
+        passportBiometricReader.validatePassport();
+
+
+        passportBiometricReader.getPassportBiometricData();
+        System.out.println("Obteniendo el NIF con OCR...");
+        passportBiometricReader.getNifWithOCR();
+        System.out.println("NIF obtenido correctamente");
+        incBiomStep();
+
+    }
+
+
+    public void readFaceBiometrics() throws HumanBiometricScanningException {
+        humanBiometricScanner.scanFaceBiometrics(faceData);
+    }
+
+    public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException {
+        if (hasConnectivity) {
+            if (enabledVoter) {
+                humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
+                BiometricData humanBioD = null;
+                BiometricData passpBioD = null;
+                verifyBiometricData();
+                removeBiometricData();
+                electoralOrganism.canVote(nif);
+            } else {
+                throw new NotEnabledException("Voter is not enabled to vote");
+            }
+        } else {
+            throw new ConnectException("We're experiencing connectivity issues");
+        }
+
+    }
 
 
 }

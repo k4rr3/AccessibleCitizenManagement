@@ -8,9 +8,19 @@ import services.ElectoralOrganism;
 import java.util.HashMap;
 
 public class StubElectoralOrganism implements ElectoralOrganism {
-    private HashMap<Nif, Boolean> enabledVoter;
+    private 
+    private HashMap<Nif, Boolean> enabledVoter = new HashMap<>() {{
+        try {
+            put(new Nif("48285883Y"), true);
+            put(new Nif("48285883U"), true);
+            put(new Nif("48285883T"), false);
+            put(new Nif("48285883Q"), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }};
     private boolean voterEnabled = true; //turn to false when voter has already voted or is in an incorrect electoral college
-    private boolean hasConnectivity = true;
+    private boolean serverIsUp = true;
 
     @Override
     public void canVote(Nif nif) throws NotEnabledException, ConnectException {
@@ -19,7 +29,7 @@ public class StubElectoralOrganism implements ElectoralOrganism {
             // Additional conditions for eligibility to vote can be added here
             // For example, check if the voter is in the correct electoral college
             // ...
-            if (hasConnectivity) {
+            if (serverIsUp) {
 
 
                 // If all conditions are met, the voter can vote
@@ -35,7 +45,7 @@ public class StubElectoralOrganism implements ElectoralOrganism {
     @Override
     public void disableVoter(Nif nif) throws ConnectException {
         // Simulate disabling the voter (mark them as voted)
-        if (hasConnectivity) {
+        if (serverIsUp) {
             System.out.println("Voter with NIF " + nif.getNif() + " has voted. Disabling voter.");
 
             // Set the voter as disabled

@@ -27,14 +27,6 @@ public class StubScrutiny implements Scrutiny {
 
     //FiXME: Add exceptions for invalid parties on each method
 
-    private List<VotingOption> partyList = Arrays.asList(
-            new VotingOption("Partido Popular"),
-            new VotingOption("Partido Socialista Obrero Español"),
-            new VotingOption("Unidas Podemos"),
-            new VotingOption("Ciudadanos"),
-            new VotingOption("Esquerra Republicana de Catalunya"),
-            new VotingOption("Partido Nacionalista Vasco")
-    );
 
     @Override
     public void initVoteCount(List<VotingOption> validParties) {

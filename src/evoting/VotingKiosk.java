@@ -126,7 +126,8 @@ public class VotingKiosk {
 
     }
 
-
+    //test
+    //invalid document option
     public void setDocument(char opt) throws ProceduralException {
         checkManualStep(2);
         checkBiomStep(2);
@@ -136,14 +137,14 @@ public class VotingKiosk {
 
         if (opt == 'n' || opt == 'd') {
             this.opt = opt;
-            System.out.println("Solicitando ayuda al personal de soporte...");
+            System.out.println("Solicitando ayuda al personal de soporte...\n");
             incManualStep();
         } else if (opt == 'p') {
             char explicitConsent = scanner.next().charAt(0);
             grantExplicitConsent(explicitConsent);
             incBiomStep();
         } else {
-            throw new ProceduralException("Incorrect document option was chosen");
+            throw new ProceduralException("Incorrect document option was chosen " + "'" + opt + "'");
         }
     }
 

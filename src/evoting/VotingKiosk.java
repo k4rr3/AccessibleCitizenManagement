@@ -279,32 +279,40 @@ public class VotingKiosk {
     }
 
 
-    public void readFaceBiometrics() throws HumanBiometricScanningException {
+    public void readFaceBiometrics() throws HumanBiometricScanningException, ProceduralException {
+        checkBiomStep(5);
         humanBiometricScanner.scanFaceBiometrics();
         this.humanBioD = humanBiometricScanner.getBiometricData();
         System.out.println("Biometría facial válida");
+        incBiomStep();
     }
 
-    public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException {
+    public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException, ProceduralException {
+        checkBiomStep(6);
         humanBiometricScanner.scanFingerprintBiometrics();
         verifyBiometricData(humanBioD, passpBioD);
         removeBiometricData();
         electoralOrganism.canVote(nif);
         System.out.println("Verificación de la identidad y del derecho al voto OK");
+        incBiomStep();
     }
 
     /*=================================================================================*/
-    private void verifyBiometricData(BiometricData humanBD, BiometricData passpBD) throws BiometricVerificationFailedException {
+    private void verifyBiometricData(BiometricData humanBD, BiometricData passpBD) throws BiometricVerificationFailedException, ProceduralException {
+        checkBiomStep(7);
         if (!humanBD.equals(passpBD)) {
             removeBiometricData();
             throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
         }
+        incBiomStep();
 
     }
 
-    private void removeBiometricData() {
+    private void removeBiometricData() throws ProceduralException {
+        checkBiomStep(8);
         humanBioD.deleteAllInfo();
         passpBioD.deleteAllInfo();
+        incBiomStep();
     }
 
 

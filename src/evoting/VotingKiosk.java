@@ -7,6 +7,8 @@ import data.VotingOption;
 import evoting.biometricdataperipheral.HumanBiometricScanner;
 import evoting.biometricdataperipheral.PassportBiometricReader;
 import exceptions.*;
+import mocks.StubElectoralOrganism;
+import mocks.StubScrutiny;
 import services.ElectoralOrganism;
 import services.LocalService;
 import services.Scrutiny;
@@ -204,16 +206,37 @@ public class VotingKiosk {
     }
 
     public void initOptionsNavigation() {
+        System.out.println("Desplegando menús y opciones de voto.....");
     }
 
     public void consultVotingOption(VotingOption vopt) {
+        System.out.println("Mostrando información del partido " + vopt.getParty());
+        this.votingOption = vopt;
     }
 
     public void vote() {
+        System.out.println("Votando por " + votingOption.getParty());
+
+        System.out.println("Mostrando pantalla de confirmación de voto");
     }
 
     public void confirmVotingOption(char conf) throws ConnectException {
-
+        if (hasConnectivity) {
+            if (conf == 's') {
+                System.out.println("Confirmando opción de voto: " + votingOption.getParty());
+                System.out.println("Voto en proceso....");
+                StubScrutiny stubScrutiny = new StubScrutiny();
+                stubScrutiny.scrutinize(votingOption);
+                System.out.println("voto escrutado");
+                StubElectoralOrganism stubElectoralOrganism = new StubElectoralOrganism();
+                stubElectoralOrganism.disableVoter(nif);
+                System.out.println("OK voto emitido");
+            } else if (conf == 'n') {
+                System.out.println("Rechazando la opción de voto: " + votingOption.getParty());
+            }
+        } else {
+            throw new ConnectException("No tienes conectividad");
+        }
     }
 
     // Internal operation, not required

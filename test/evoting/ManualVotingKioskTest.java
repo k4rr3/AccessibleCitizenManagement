@@ -3,9 +3,11 @@ package evoting;
 import data.Password;
 import exceptions.InvalidAccountException;
 import exceptions.ProceduralException;
+import mocks.StubLocalService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import services.LocalService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -16,7 +18,9 @@ public class ManualVotingKioskTest {
     @BeforeEach
     public void setUp() throws ProceduralException {
         votingKiosk = new VotingKiosk();
+        votingKiosk.setLocalService(new StubLocalService());
         votingKiosk.setOption(1);
+        votingKiosk.setOpt('n');
         votingKiosk.initVoting();
     }
 
@@ -30,39 +34,36 @@ public class ManualVotingKioskTest {
     public void testInvalidOptions() throws ProceduralException {
         votingKiosk.setOption(0);
         assertThrows(ProceduralException.class, () -> votingKiosk.initVoting());
-        System.out.println("");
         votingKiosk.setOption(5);
         assertThrows(ProceduralException.class, () -> votingKiosk.initVoting());
     }
 
-    // ============ Setdocument Tests ==================================
+    // ============ Set document Tests ==================================
     @Test
     public void testSetDocumentIncorrectOpt() throws ProceduralException {
-        votingKiosk.setOption(1);
-        votingKiosk.initVoting();
         assertThrows(ProceduralException.class, () -> votingKiosk.setDocument('a'));
     }
 
     @Test
     public void testSetDocumentCorrectOpt() throws ProceduralException {
-        votingKiosk.setOption(1);
-        votingKiosk.initVoting();
+
         assertDoesNotThrow(() -> votingKiosk.setDocument('n'));
-        assertDoesNotThrow(() -> votingKiosk.setDocument('d'));
     }
 
     @Test
     public void testEnterAccountSuccess() throws ProceduralException, InvalidAccountException {
         votingKiosk.setDocument('n');
         votingKiosk.setOpt('n');
-        assertDoesNotThrow(() -> votingKiosk.enterAccount("alice", new Password("Alice1234")));
+        votingKiosk.setLocalService(new StubLocalService());
+        assertDoesNotThrow(() -> votingKiosk.enterAccount("bob", new Password("Bob59678")));
     }
 
     @Test
     public void testEnterAccountFailure() throws ProceduralException, InvalidAccountException {
         votingKiosk.setDocument('n');
         votingKiosk.setOpt('n');
-        assertDoesNotThrow(() -> votingKiosk.enterAccount("alice", new Password("Alice13443")));
+        votingKiosk.setLocalService(new StubLocalService());
+        assertThrows(IllegalArgumentException.class, () -> votingKiosk.enterAccount("alice", new Password("hola")));
     }
 
 

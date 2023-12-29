@@ -8,20 +8,28 @@ import services.LocalService;
 import java.util.HashMap;
 
 public class StubLocalService implements LocalService {
-    private final HashMap<String, Password> supportUsers = new HashMap<>() {
-        {
-            put("alice", new Password("Alice1234"));
-            put("bob", new Password("Bob5678"));
-            put("charlie", new Password("Charlie!9"));
-            put("david", new Password("DavidPwd1"));
-            put("emma", new Password("EmmaPass22"));
-            put("frank", new Password("FrankPwd33"));
-            put("grace", new Password("Grace12345"));
-            put("harry", new Password("HarryPwd678"));
-            put("isabel", new Password("IsabelPass99"));
-            put("jackson", new Password("JacksonPwd123"));
+
+
+    private final HashMap<String, Password> supportUsers = new HashMap<>();
+
+    {
+        try {
+            supportUsers.put("alice", new Password("Alice1234"));
+            supportUsers.put("bob", new Password("Bob59678"));
+            supportUsers.put("charlie", new Password("Charlie!9"));
+            supportUsers.put("david", new Password("DavidPwd1"));
+            supportUsers.put("emma", new Password("EmmaPass22"));
+            supportUsers.put("frank", new Password("FrankPwd33"));
+            supportUsers.put("grace", new Password("Grace12345"));
+            supportUsers.put("harry", new Password("HarryPwd678"));
+            supportUsers.put("isabel", new Password("IsabelPass99"));
+            supportUsers.put("jackson", new Password("JacksonPwd123"));
+        } catch (IllegalArgumentException e) {
+            // Handle the exception (e.g., log an error, rethrow, etc.)
+            e.printStackTrace();
         }
-    };
+    }
+
 
     @Override
     public void verifyAccount(String login, Password pssw) throws InvalidAccountException {

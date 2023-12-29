@@ -9,10 +9,9 @@ import exceptions.NotValidPassportException;
 import exceptions.PassportBiometricReadingException;
 
 public class StubPassportBiometricReader implements PassportBiometricReader {
+    private String passportNumber;
     private SingleBiometricData facialBiomData;
     private SingleBiometricData fingerprintBiomData;
-
-    pr
 
     // Constructor
     public StubPassportBiometricReader() {

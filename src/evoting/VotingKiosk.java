@@ -1,19 +1,15 @@
 package evoting;
 
-import data.BiometricData;
-import data.Nif;
-import data.Password;
-import data.VotingOption;
+import data.*;
 import evoting.biometricdataperipheral.HumanBiometricScanner;
 import evoting.biometricdataperipheral.PassportBiometricReader;
 import exceptions.*;
-import mocks.StubElectoralOrganism;
-import mocks.StubScrutiny;
+import mocks.StubHumanBiometricScanner;
+import mocks.StubPassportBiometricReader;
 import services.ElectoralOrganism;
 import services.LocalService;
 import services.Scrutiny;
 
-import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -37,9 +33,12 @@ public class VotingKiosk {
 
 
     // -------Biometric Data Peripheral----------------------
-    private HumanBiometricScanner humanBiometricScanner;
-    private PassportBiometricReader passportBiometricReader;
+    private StubHumanBiometricScanner humanBiometricScanner;
+    private StubPassportBiometricReader passportBiometricReader;
     // ------------------------------------------------------
+
+    private BiometricData humanBioD;
+    private BiometricData passpBioD;
 
     private int manualProcedureStep;
     private int biomProcedureStep;
@@ -89,11 +88,11 @@ public class VotingKiosk {
         this.electoralOrganism = electoralOrganism;
     }
 
-    public void setHumanBiometricScanner(HumanBiometricScanner humanBiometricScanner) {
+    public void setHumanBiometricScanner(StubHumanBiometricScanner humanBiometricScanner) {
         this.humanBiometricScanner = humanBiometricScanner;
     }
 
-    public void setPassportBiometricReader(PassportBiometricReader passportBiometricReader) {
+    public void setPassportBiometricReader(StubPassportBiometricReader passportBiometricReader) {
         this.passportBiometricReader = passportBiometricReader;
     }
 
@@ -264,9 +263,39 @@ public class VotingKiosk {
     }
 
 
+    //*====================VERIFICACIÓN BIOMÉTRICA=========================================*//*
+
+
+    public void readPassport() throws NotValidPassportException, PassportBiometricReadingException, InvalidDNIDocumException, ProceduralException {
+        checkBiomStep(4);
+        passportBiometricReader.validatePassport();
+        passportBiometricReader.getPassportBiometricData();
+        System.out.println("Validez y lectura de los parámetros del pasaporte OK");
+        passportBiometricReader.getNifWithOCR();
+        Passport passport = passportBiometricReader.getPassport();
+        this.passpBioD = passport.getBiometricData();
+        incBiomStep();
+
+    }
+
+
+    public void readFaceBiometrics() throws HumanBiometricScanningException {
+        humanBiometricScanner.scanFaceBiometrics();
+        this.humanBioD = humanBiometricScanner.getBiometricData();
+        System.out.println("Biometría facial válida");
+    }
+
+    public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException {
+        humanBiometricScanner.scanFingerprintBiometrics();
+        verifyBiometricData(humanBioD, passpBioD);
+        removeBiometricData();
+        electoralOrganism.canVote(nif);
+        System.out.println("Verificación de la identidad y del derecho al voto OK");
+    }
+
     /*=================================================================================*/
-    private void verifyBiometricData() throws BiometricVerificationFailedException {
-        if (!humanBioD.equals(passpBioD)) {
+    private void verifyBiometricData(BiometricData humanBD, BiometricData passpBD) throws BiometricVerificationFailedException {
+        if (!humanBD.equals(passpBD)) {
             removeBiometricData();
             throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
         }
@@ -276,42 +305,6 @@ public class VotingKiosk {
     private void removeBiometricData() {
         humanBioD.deleteAllInfo();
         passpBioD.deleteAllInfo();
-    }
-
-    *//*====================VERIFICACIÓN BIOMÉTRICA=========================================*//*
-
-
-    public void readPassport() throws NotValidPassportException, PassportBiometricReadingException, InvalidDNIDocumException, ProceduralException {
-        checkBiomStep(4);
-        passportBiometricReader.validatePassport();
-        passportBiometricReader.getPassportBiometricData();
-        System.out.println("Validez y lectura de los parámetros del pasaporte OK");
-        passportBiometricReader.getNifWithOCR();
-        incBiomStep();
-
-    }
-
-
-    public void readFaceBiometrics() throws HumanBiometricScanningException {
-        humanBiometricScanner.scanFaceBiometrics(faceData);
-    }
-
-    public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException {
-        if (hasConnectivity) {
-            if (enabledVoter) {
-                humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
-                BiometricData humanBioD = null;
-                BiometricData passpBioD = null;
-                verifyBiometricData();
-                removeBiometricData();
-                electoralOrganism.canVote(nif);
-            } else {
-                throw new NotEnabledException("Voter is not enabled to vote");
-            }
-        } else {
-            throw new ConnectException("We're experiencing connectivity issues");
-        }
-
     }
 
 

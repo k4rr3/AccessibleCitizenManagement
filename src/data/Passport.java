@@ -9,6 +9,7 @@ public class Passport {
     private SingleBiometricData facialBiomData;
     private SingleBiometricData fingerprintBiomData;
 
+
     public BiometricData biometricData;
 
     public Nif nif = new Nif("77711133X");
@@ -19,5 +20,9 @@ public class Passport {
         this.fingerprintBiomData = fingerprintBiomData;
         this.biometricData = new BiometricData(facialBiomData, fingerprintBiomData);
         this.nif = new Nif(nif);
+    }
+
+    public BiometricData getBiometricData() {
+        return biometricData;
     }
 }

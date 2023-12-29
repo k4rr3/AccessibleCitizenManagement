@@ -1,26 +1,41 @@
 package mocks;
 
+import data.BiometricData;
 import data.SingleBiometricData;
 import exceptions.HumanBiometricScanningException;
 
 public class StubHumanBiometricScanner implements evoting.biometricdataperipheral.HumanBiometricScanner {
+
+
+    private BiometricData biometricData;
+
+
+
+    public StubHumanBiometricScanner(SingleBiometricData faceData, SingleBiometricData fingerprintData) {
+        this.biometricData = new BiometricData(faceData, fingerprintData);
+    }
+
     @Override
-    public SingleBiometricData scanFaceBiometrics(byte[] faceData) throws HumanBiometricScanningException {
+    public SingleBiometricData scanFaceBiometrics() throws HumanBiometricScanningException {
         try {
-            //implementation to scan face biometrics
-            return new SingleBiometricData(faceData);
+            System.out.println("Biometría facial escaneada");
+            return biometricData.getFacialKey();
+
         } catch (Exception e) {
             throw new HumanBiometricScanningException("Error scanning face biometrics");
         }
     }
-    
+
     @Override
-    public SingleBiometricData scanFingerprintBiometrics(byte[] fingerprintData) throws HumanBiometricScanningException {
+    public SingleBiometricData scanFingerprintBiometrics() throws HumanBiometricScanningException {
         try {
-            //implementation to scan fingerprint biometrics
-            return new SingleBiometricData(fingerprintData);
+            System.out.println("Biometría de la huella digital escaneada");
+            return biometricData.getFingerPrintKey();
         } catch (Exception e) {
             throw new HumanBiometricScanningException("Error scanning fingerprint biometrics");
         }
+    }
+    public BiometricData getBiometricData() {
+        return biometricData;
     }
 }

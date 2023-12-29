@@ -102,6 +102,11 @@ public class VotingKiosk {
     public void setOption(int option) {
         this.option = option;
     }
+
+    public void setOpt(char opt) {
+        this.opt = opt;
+    }
+
     //======================================================================
 
     //test:
@@ -166,7 +171,6 @@ public class VotingKiosk {
             System.out.println("Account successfully verified");
             incManualStep();
         }
-
     }
 
 

@@ -96,6 +96,7 @@ public class VotingKiosk {
         this.passportBiometricReader = passportBiometricReader;
     }
 
+<<<<<<< Updated upstream
 
     public int option;
 
@@ -105,6 +106,74 @@ public class VotingKiosk {
 
     public void setOpt(char opt) {
         this.opt = opt;
+=======
+    public char getExplicitConsentGiven() {
+        return explicitConsentGiven;
+    }
+
+    public Nif getNif() {
+        return nif;
+    }
+
+    public BiometricData getHumanBioD() {
+        return humanBioD;
+    }
+
+    public BiometricData getPasspBioD() {
+        return passpBioD;
+    }
+
+    public byte[] getFingerprintData() {
+        return fingerprintData;
+    }
+
+    public byte[] getFaceData() {
+        return faceData;
+    }
+
+    public String getPassportNumber() {
+        return passportNumber;
+    }
+
+    public String getExtractedNif() {
+        return extractedNif;
+    }
+
+    public char getOpt() {
+        return opt;
+    }
+
+    public HashMap<String, String> getSupportUsers() {
+        return supportUsers;
+    }
+
+    public boolean isEnabledVoter() {
+        return enabledVoter;
+    }
+
+    public boolean isHasConnectivity() {
+        return hasConnectivity;
+    }
+
+    public ElectoralOrganism getElectoralOrganism() {
+        return electoralOrganism;
+    }
+
+    public LocalService getLocalService() {
+        return localService;
+    }
+
+    public Scrutiny getScrutiny() {
+        return scrutiny;
+    }
+
+    public HumanBiometricScanner getHumanBiometricScanner() {
+        return humanBiometricScanner;
+    }
+
+    public PassportBiometricReader getPassportBiometricReader() {
+        return passportBiometricReader;
+>>>>>>> Stashed changes
     }
 
     //======================================================================

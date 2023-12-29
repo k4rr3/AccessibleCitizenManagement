@@ -3,6 +3,7 @@ package mocks;
 import data.VotingOption;
 import services.Scrutiny;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,15 @@ public class StubScrutiny implements Scrutiny {
     private int blankVotes;
 
     private Map<VotingOption, Integer> validPartiesVoteCount;
+
+    List<VotingOption> partyList = Arrays.asList(
+            new VotingOption("Partido Popular"),
+            new VotingOption("Partido Socialista Obrero Español"),
+            new VotingOption("Unidas Podemos"),
+            new VotingOption("Ciudadanos"),
+            new VotingOption("Esquerra Republicana de Catalunya"),
+            new VotingOption("Partido Nacionalista Vasco")
+    );
 
     //FiXME: Add exceptions for invalid parties on each method
 

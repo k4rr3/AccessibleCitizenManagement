@@ -23,6 +23,8 @@ public class VotingKiosk {
     private Nif nif;
 
     private char explicitConsentGiven = 'n';
+
+
     private char opt;
 
 
@@ -96,11 +98,17 @@ public class VotingKiosk {
         this.passportBiometricReader = passportBiometricReader;
     }
 
+    //===========Setters for test purposes===================================
 
-    public int option;
+    public int option; //opcion para elegir funcionalidad de sistema
 
     public void setOption(int option) {
         this.option = option;
+    }
+
+    //setter for test purposes
+    public void setOpt(char opt) {
+        this.opt = opt;
     }
     //======================================================================
 
@@ -128,17 +136,20 @@ public class VotingKiosk {
 
 
     public void setDocument(char opt) throws ProceduralException {
-        checkManualStep(2);
-        checkBiomStep(2);
+
+
         // check for a valid opt:
         // 'd' and 'n' stand for dni or nif which mean the same, but both are accepted
         // 'p' stands for passport
 
         if (opt == 'n' || opt == 'd') {
             this.opt = opt;
+            checkManualStep(2);
             System.out.println("Solicitando ayuda al personal de soporte...");
             incManualStep();
         } else if (opt == 'p') {
+            this.opt = opt;
+            checkBiomStep(2);
             char explicitConsent = scanner.next().charAt(0);
             grantExplicitConsent(explicitConsent);
             incBiomStep();
@@ -148,7 +159,7 @@ public class VotingKiosk {
     }
 
     public void grantExplicitConsent(char cons) throws ProceduralException {
-        checkBiomStep(999999);
+        checkBiomStep(3);
         if (cons == 'y' || cons == 'n' || cons == 'Y' || cons == 'N') {
             this.explicitConsentGiven = cons;
             incBiomStep();
@@ -245,7 +256,7 @@ public class VotingKiosk {
     private void finalizeSession() {
         System.out.println("Not implemented yet, but finalize session has been invoked");
     }
-//(...) Setter methods for injecting dependences and additional methods
+
 
 
     /*=================================================================================*/

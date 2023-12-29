@@ -265,58 +265,54 @@ public class VotingKiosk {
 
 
     /*=================================================================================*/
-//    private void verifyBiometricData() throws BiometricVerificationFailedException {
-//        if (!humanBioD.equals(passpBioD)) {
-//            removeBiometricData();
-//            throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
-//        }
-//
-//    }
-//
-//    private void removeBiometricData() {
-//        humanBioD.deleteAllInfo();
-//        passpBioD.deleteAllInfo();
-//    }
-//
-//    *//*====================VERIFICACIÓN BIOMÉTRICA=========================================*//*
-//
-//
-//    public void readPassport() throws NotValidPassportException, PassportBiometricReadingException, InvalidDNIDocumException, ProceduralException {
-//        checkBiomStep(4);
-//
-//        passportBiometricReader.validatePassport();
-//
-//
-//        passportBiometricReader.getPassportBiometricData();
-//        System.out.println("Obteniendo el NIF con OCR...");
-//        passportBiometricReader.getNifWithOCR();
-//        System.out.println("NIF obtenido correctamente");
-//        incBiomStep();
-//
-//    }
-//
-//
-//    public void readFaceBiometrics() throws HumanBiometricScanningException {
-//        humanBiometricScanner.scanFaceBiometrics(faceData);
-//    }
-//
-//    public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException {
-//        if (hasConnectivity) {
-//            if (enabledVoter) {
-//                humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
-//                BiometricData humanBioD = null;
-//                BiometricData passpBioD = null;
-//                verifyBiometricData();
-//                removeBiometricData();
-//                electoralOrganism.canVote(nif);
-//            } else {
-//                throw new NotEnabledException("Voter is not enabled to vote");
-//            }
-//        } else {
-//            throw new ConnectException("We're experiencing connectivity issues");
-//        }
-//
-//    }
+    private void verifyBiometricData() throws BiometricVerificationFailedException {
+        if (!humanBioD.equals(passpBioD)) {
+            removeBiometricData();
+            throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
+        }
+
+    }
+
+    private void removeBiometricData() {
+        humanBioD.deleteAllInfo();
+        passpBioD.deleteAllInfo();
+    }
+
+    *//*====================VERIFICACIÓN BIOMÉTRICA=========================================*//*
+
+
+    public void readPassport() throws NotValidPassportException, PassportBiometricReadingException, InvalidDNIDocumException, ProceduralException {
+        checkBiomStep(4);
+        passportBiometricReader.validatePassport();
+        passportBiometricReader.getPassportBiometricData();
+        System.out.println("Validez y lectura de los parámetros del pasaporte OK");
+        passportBiometricReader.getNifWithOCR();
+        incBiomStep();
+
+    }
+
+
+    public void readFaceBiometrics() throws HumanBiometricScanningException {
+        humanBiometricScanner.scanFaceBiometrics(faceData);
+    }
+
+    public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException {
+        if (hasConnectivity) {
+            if (enabledVoter) {
+                humanBiometricScanner.scanFingerprintBiometrics(fingerprintData);
+                BiometricData humanBioD = null;
+                BiometricData passpBioD = null;
+                verifyBiometricData();
+                removeBiometricData();
+                electoralOrganism.canVote(nif);
+            } else {
+                throw new NotEnabledException("Voter is not enabled to vote");
+            }
+        } else {
+            throw new ConnectException("We're experiencing connectivity issues");
+        }
+
+    }
 
 
 }

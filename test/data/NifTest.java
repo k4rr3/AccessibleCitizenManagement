@@ -13,8 +13,8 @@ class NifTest {
 
     @Test
     void testValidNif() throws InvalidDNIDocumException {
-        nif = new Nif("73214439B");
-        assertEquals("73214439B", nif.getNif());
+        nif = new Nif("99572958R");
+        assertEquals("99572958R", nif.getNif());
     }
 
     @Test

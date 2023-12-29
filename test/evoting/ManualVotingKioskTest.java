@@ -34,6 +34,7 @@ public class ManualVotingKioskTest {
         votingKiosk.setOption(5);
         assertThrows(ProceduralException.class, () -> votingKiosk.initVoting());
     }
+
     // ============ Setdocument Tests ==================================
     @Test
     public void testSetDocumentIncorrectOpt() throws ProceduralException {
@@ -54,10 +55,14 @@ public class ManualVotingKioskTest {
     public void testEnterAccountSuccess() throws ProceduralException, InvalidAccountException {
         votingKiosk.setDocument('n');
         votingKiosk.setOpt('n');
-        assertDoesNotThrow(InvalidAccountException.class, votingKiosk.enterAccount("login",new Password("s")));
+        assertDoesNotThrow(() -> votingKiosk.enterAccount("alice", new Password("Alice1234")));
+    }
 
-
-
+    @Test
+    public void testEnterAccountFailure() throws ProceduralException, InvalidAccountException {
+        votingKiosk.setDocument('n');
+        votingKiosk.setOpt('n');
+        assertDoesNotThrow(() -> votingKiosk.enterAccount("alice", new Password("Alice13443")));
     }
 
 

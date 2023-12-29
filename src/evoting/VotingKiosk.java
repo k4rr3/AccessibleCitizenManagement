@@ -59,7 +59,7 @@ public class VotingKiosk {
     //==============Procedural Counters & Methods==============================
     private void checkManualStep(int stepNumber) throws ProceduralException {
         if ((opt == 'd' || opt == 'n') && manualProcedureStep != stepNumber)
-            throw new ProceduralException("Some procedures went wrong");
+            throw new ProceduralException("Some procedures went wrong" + manualProcedureStep);
 
     }
 

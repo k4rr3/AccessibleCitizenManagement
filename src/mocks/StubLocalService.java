@@ -8,27 +8,35 @@ import services.LocalService;
 import java.util.HashMap;
 
 public class StubLocalService implements LocalService {
-    private final HashMap<String, String> supportUsers = new HashMap<>() {
-        {
-            put("alice", "pass123");
-            put("bob", "securePwd");
-            put("charlie", "p@ssw0rd");
-            put("david", "1q2w3e4r");
-            put("emma", "password123");
-            put("frank", "passWord!456");
-            put("grace", "letmein789");
-            put("harry", "h@rryPotter");
-            put("isabel", "pa$$w0rd");
-            put("jackson", "j@ckson123");
+
+
+    private final HashMap<String, Password> supportUsers = new HashMap<>();
+
+    {
+        try {
+            supportUsers.put("alice", new Password("Alice1234"));
+            supportUsers.put("bob", new Password("Bob59678"));
+            supportUsers.put("charlie", new Password("Charlie!9"));
+            supportUsers.put("david", new Password("DavidPwd1"));
+            supportUsers.put("emma", new Password("EmmaPass22"));
+            supportUsers.put("frank", new Password("FrankPwd33"));
+            supportUsers.put("grace", new Password("Grace12345"));
+            supportUsers.put("harry", new Password("HarryPwd678"));
+            supportUsers.put("isabel", new Password("IsabelPass99"));
+            supportUsers.put("jackson", new Password("JacksonPwd123"));
+        } catch (IllegalArgumentException e) {
+            // Handle the exception (e.g., log an error, rethrow, etc.)
+            e.printStackTrace();
         }
-    };
+    }
+
 
     @Override
     public void verifyAccount(String login, Password pssw) throws InvalidAccountException {
         if (supportUsers.containsKey(login)) {
             // Check if the provided password matches the stored password
-            String storedPassword = supportUsers.get(login);
-            if (pssw != null && pssw.getPassword().equals(storedPassword)) {
+            Password storedPassword = supportUsers.get(login);
+            if (pssw != null && pssw.equals(storedPassword)) {
                 System.out.println("Authentication successful. Welcome, " + login + "!");
             } else {
                 throw new InvalidAccountException("Authentication failed. Incorrect password.");

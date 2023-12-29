@@ -13,7 +13,7 @@ public class StubHumanBiometricScanner implements evoting.biometricdataperiphera
             throw new HumanBiometricScanningException("Error scanning face biometrics");
         }
     }
-
+    
     @Override
     public SingleBiometricData scanFingerprintBiometrics(byte[] fingerprintData) throws HumanBiometricScanningException {
         try {

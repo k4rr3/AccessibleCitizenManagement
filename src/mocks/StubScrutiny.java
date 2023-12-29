@@ -3,6 +3,7 @@ package mocks;
 import data.VotingOption;
 import services.Scrutiny;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +18,20 @@ public class StubScrutiny implements Scrutiny {
 
     //FiXME: Add exceptions for invalid parties on each method
 
+    private List<VotingOption> partyList = Arrays.asList(
+            new VotingOption("Partido Popular"),
+            new VotingOption("Partido Socialista Obrero Español"),
+            new VotingOption("Unidas Podemos"),
+            new VotingOption("Ciudadanos"),
+            new VotingOption("Esquerra Republicana de Catalunya"),
+            new VotingOption("Partido Nacionalista Vasco")
+    );
+
     @Override
     public void initVoteCount(List<VotingOption> validParties) {
         validPartiesVoteCount = new HashMap<>();
 
-        for (VotingOption party : validParties){
+        for (VotingOption party : validParties) {
             validPartiesVoteCount.put(party, 0);
         }
 
@@ -34,12 +44,12 @@ public class StubScrutiny implements Scrutiny {
     public void scrutinize(VotingOption vopt) {
 
         // Null representa la papeleta vacia por tanto voto en blanco
-        if(vopt == null) {
+        if (vopt == null) {
             blankVotes++;
         }
 
         // La papeleta contiene un partido politico valido, se suma como voto al partido selecionado
-        else if(validPartiesVoteCount.containsKey(vopt)){
+        else if (validPartiesVoteCount.containsKey(vopt)) {
             int partyVoteCount = validPartiesVoteCount.get(vopt);
             validPartiesVoteCount.put(vopt, partyVoteCount + 1); // add one vote to the valid party
 
@@ -55,7 +65,7 @@ public class StubScrutiny implements Scrutiny {
 
     @Override
     public int getVotesFor(VotingOption vopt) {
-        if(validPartiesVoteCount.containsKey(vopt)){
+        if (validPartiesVoteCount.containsKey(vopt)) {
             return validPartiesVoteCount.get(vopt);
         } else {
             System.out.println("Invalid voting option: " + vopt);

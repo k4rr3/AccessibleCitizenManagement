@@ -7,6 +7,8 @@ import data.VotingOption;
 import evoting.biometricdataperipheral.HumanBiometricScanner;
 import evoting.biometricdataperipheral.PassportBiometricReader;
 import exceptions.*;
+import mocks.StubElectoralOrganism;
+import mocks.StubScrutiny;
 import services.ElectoralOrganism;
 import services.LocalService;
 import services.Scrutiny;
@@ -22,9 +24,9 @@ public class VotingKiosk {
 
     private char explicitConsentGiven = 'n';
     private char opt;
-    private final HashMap<String, String> supportUsers;
-    private boolean enabledVoter;
-    private boolean hasConnectivity;
+
+
+    private VotingOption votingOption;
 
     // ---------- Services variables -----------------------
     private ElectoralOrganism electoralOrganism;
@@ -47,10 +49,29 @@ public class VotingKiosk {
     // Input events
 
 
-    public VotingKiosk(HashMap<String, String> supportUsers) {
-        this.supportUsers = supportUsers;
+    public VotingKiosk() {
         this.manualProcedureStep = 1;
         this.scanner = new Scanner(System.in);
+    }
+
+    //==============Procedural Counters & Methods==============================
+    private void checkManualStep(int stepNumber) throws ProceduralException {
+        if ((opt == 'd' || opt == 'n') && manualProcedureStep != stepNumber)
+            throw new ProceduralException("Some procedures went wrong");
+
+    }
+
+    private void checkBiomStep(int stepNumber) throws ProceduralException {
+        if (opt == 'p' && biomProcedureStep != stepNumber)
+            throw new ProceduralException("Some procedures went wrong");
+    }
+
+    private void incManualStep() {
+        if (opt == 'd' || opt == 'n') manualProcedureStep++;
+    }
+
+    private void incBiomStep() {
+        if (opt == 'p') biomProcedureStep++;
     }
 
     //===============Setters for Dependency Injection==========================
@@ -75,55 +96,12 @@ public class VotingKiosk {
         this.passportBiometricReader = passportBiometricReader;
     }
 
-    public char getExplicitConsentGiven() {
-        return explicitConsentGiven;
-    }
-
-    public Nif getNif() {
-        return nif;
-    }
-
-
-    public char getOpt() {
-        return opt;
-    }
-
-    public HashMap<String, String> getSupportUsers() {
-        return supportUsers;
-    }
-
-    public boolean isEnabledVoter() {
-        return enabledVoter;
-    }
-
-    public boolean isHasConnectivity() {
-        return hasConnectivity;
-    }
-
-    public ElectoralOrganism getElectoralOrganism() {
-        return electoralOrganism;
-    }
-
-    public LocalService getLocalService() {
-        return localService;
-    }
-
-    public Scrutiny getScrutiny() {
-        return scrutiny;
-    }
-
-    public HumanBiometricScanner getHumanBiometricScanner() {
-        return humanBiometricScanner;
-    }
-
-    public PassportBiometricReader getPassportBiometricReader() {
-        return passportBiometricReader;
-    }
 
     //======================================================================
 
     public void initVoting() throws ProceduralException {
-        if (manualProcedureStep != 1) throw new ProceduralException("Voting procedure has already been started");
+        checkManualStep(1);
+        checkBiomStep(1);
         System.out.println("Seleccione la funcionalidad que desea:");
         System.out.println("1- e-voting \n 2- certificado de nacimiento 3- ...");
         Scanner scanner = new Scanner(System.in);
@@ -133,14 +111,15 @@ public class VotingKiosk {
         } else {
             System.out.println("funcionalidad e-voting seleccionada");
         }
-        System.out.println("Acepta el consentimiento explícito del usuario ? \n Sí -> y\n No -> n\n default: n");
-        manualProcedureStep++;
+        incManualStep();
+        incBiomStep();
 
     }
 
 
     public void setDocument(char opt) throws ProceduralException {
-        if (manualProcedureStep != 2) throw new ProceduralException("Voting procedure has already been started");
+        checkManualStep(2);
+        checkBiomStep(2);
         // check for a valid opt:
         // 'd' and 'n' stand for dni or nif which mean the same, but both are accepted
         // 'p' stands for passport
@@ -148,34 +127,34 @@ public class VotingKiosk {
         if (opt == 'n' || opt == 'd') {
             this.opt = opt;
             System.out.println("Solicitando ayuda al personal de soporte...");
-            manualProcedureStep++;
+            incManualStep();
         } else if (opt == 'p') {
             char explicitConsent = scanner.next().charAt(0);
             grantExplicitConsent(explicitConsent);
-            biomProcedureStep++;
+            incBiomStep();
         } else {
             throw new ProceduralException("Incorrect document option was chosen");
         }
     }
 
     public void grantExplicitConsent(char cons) throws ProceduralException {
-        if (biomProcedureStep != 9999) throw new ProceduralException("Some procedures went wrong");
+        checkBiomStep(999999);
         if (cons == 'y' || cons == 'n' || cons == 'Y' || cons == 'N') {
             this.explicitConsentGiven = cons;
-            biomProcedureStep++;
+            incBiomStep();
         } else {
             throw new ProceduralException("Invalid explicit consent option");
         }
     }
 
     public void enterAccount(String login, Password pssw) throws InvalidAccountException, ProceduralException {
-        if (manualProcedureStep != 3) throw new ProceduralException("Some procedures went wrong");
+        checkManualStep(3);
         if (this.opt == 'n' || this.opt == 'd') {
             //Estamos en el primer DSS
             System.out.println("Verifying account...");
             localService.verifyAccount(login, pssw);
             System.out.println("Account successfully verified");
-            manualProcedureStep++;
+            incManualStep();
         }
 
     }
@@ -183,49 +162,84 @@ public class VotingKiosk {
 
     public void confirmIdentif(char conf) throws InvalidDNIDocumException, ProceduralException {
         if (this.opt == 'n' || this.opt == 'd') {
-            if (manualProcedureStep != 4) throw new ProceduralException("Some procedures went wrong");
+            checkManualStep(4);
             if (conf == 'F') throw new InvalidDNIDocumException("Unconfirmed identity");
             System.out.println("Identity has been successfully confirmed");
-            manualProcedureStep++;
+            incManualStep();
         } else throw new ProceduralException("Wrong identification method");
     }
 
 
     public void enterNif(Nif nif) throws NotEnabledException, ConnectException, ProceduralException {
         if (this.opt == 'n' || this.opt == 'd') {
-            if (manualProcedureStep != 5) throw new ProceduralException("Some procedures went wrong");
+            checkManualStep(5);
             this.nif = nif;
             System.out.println("NIF is ok, now let's check vote's right");
             electoralOrganism.canVote(nif);
             System.out.println("Citizen can vote");
-            manualProcedureStep++;
-        }throw new ProceduralException("Wrong identification method");
+            incManualStep();
+        }
+        throw new ProceduralException("Wrong identification method");
 
     }
 
-    public void initOptionsNavigation() {
+
+    public void initOptionsNavigation() throws ProceduralException {
+        checkManualStep(6);
+        checkBiomStep(9);
+        System.out.println("Desplegando menús y opciones de voto.....");
+        incManualStep();
+        incBiomStep();
     }
 
-    public void consultVotingOption(VotingOption vopt) {
+    public void consultVotingOption(VotingOption vopt) throws ProceduralException {
+        checkManualStep(7);
+        checkBiomStep(10);
+        System.out.println("Mostrando información del partido " + vopt.getParty());
+        this.votingOption = vopt;
+        incManualStep();
+        incBiomStep();
     }
 
-    public void vote() {
+    public void vote() throws ProceduralException {
+        checkManualStep(8);
+        checkBiomStep(11);
+        System.out.println("Votando por " + votingOption.getParty());
+        System.out.println("Mostrando pantalla de confirmación de voto");
+        incManualStep();
+        incBiomStep();
     }
 
-    public void confirmVotingOption(char conf) throws ConnectException {
+    public void confirmVotingOption(char conf) throws ConnectException, ProceduralException {
+        checkManualStep(9);
+        checkBiomStep(12);
+        if (conf == 'y' || conf == 'Y') {
+            System.out.println("Confirmando opción de voto: " + votingOption.getParty());
+            System.out.println("Voto en proceso....");
+            scrutiny.scrutinize(votingOption);
+            System.out.println("voto escrutado");
+            electoralOrganism.disableVoter(nif);
+            System.out.println("Votante deshabilitado correctamente");
+            finalizeSession();
+            System.out.println("Mostrando pantalla inicial...");
+        } else if (conf == 'n' || conf == 'N') {
+            System.out.println("Rechazando la opción de voto: " + votingOption.getParty());
+            throw new ProceduralException("La opción de voto ha sido rechazada");
+        }
+        incManualStep();
+        incBiomStep();
 
     }
 
     // Internal operation, not required
     private void finalizeSession() {
-        {
-            System.out.println("Not implemented yet, but finalize session has been invoked");
-        }
-        //(...) Setter methods for injecting dependences and additional methods
+        System.out.println("Not implemented yet, but finalize session has been invoked");
     }
+//(...) Setter methods for injecting dependences and additional methods
+
 
     /*=================================================================================*/
-    private void verifyBiometricData()
+    /*private void verifyBiometricData()
             throws BiometricVerificationFailedException {
         if (!humanBioD.equals(passpBioD)) {
             removeBiometricData();
@@ -239,7 +253,7 @@ public class VotingKiosk {
         passpBioD.deleteAllInfo();
     }
 
-    /*====================VERIFICACIÓN BIOMÉTRICA=========================================*/
+    *//*====================VERIFICACIÓN BIOMÉTRICA=========================================*//*
 
 
     public void readPassport()
@@ -276,5 +290,5 @@ public class VotingKiosk {
 
     }
 
-
+*/
 }

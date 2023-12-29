@@ -1,8 +1,5 @@
-/*
 package evoting;
 
-import data.Password;
-import exceptions.InvalidAccountException;
 import exceptions.ProceduralException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,51 +12,46 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class VotingKioskTest {
 
     private VotingKiosk votingKiosk;
+    private HashMap<String, String> supportUsers;
 
     @BeforeEach
-    void setUp() {
-        // Common setup before each test
-        HashMap<String, String> supportUsers = new HashMap<>();
-        supportUsers.put("user1", "Password1");
-        supportUsers.put("user2", "Password2");
-        // Add more support users as needed
-
+    public void setUp() {
+        // Configuración común para todas las pruebas
+        supportUsers = new HashMap<>();
         votingKiosk = new VotingKiosk(supportUsers);
     }
 
     @Test
-    void testGrantExplicitConsent() throws ProceduralException {
-        // Test explicit consent granting
-        votingKiosk.grantExplicitConsent('y');
-        assertEquals('y', votingKiosk.getExplicitConsentGiven());
-
-        // Test invalid explicit consent
-        assertThrows(ProceduralException.class, () -> votingKiosk.grantExplicitConsent('a'));
+    public void testSetDocumentValidOption() throws ProceduralException {
+        // Prueba para asegurarse de que setDocument funciona correctamente con una opción válida
+        votingKiosk.initVoting();  // Iniciar el proceso de votación
+        votingKiosk.setDocument('n');
+        assertEquals('n', votingKiosk.getOpt());
     }
 
     @Test
-    void testSetDocument() throws ProceduralException {
-        // Test setting document option
-        votingKiosk.setDocument('n');
-        assertEquals('n', votingKiosk.getOpt());
+    public void testSetDocumentInvalidOption() throws ProceduralException {
+        // Prueba para asegurarse de que setDocument maneja una opción no válida correctamente
+        votingKiosk.initVoting();  // Iniciar el proceso de votación
 
-        // Test invalid document option
         assertThrows(ProceduralException.class, () -> votingKiosk.setDocument('x'));
     }
 
     @Test
-    void testEnterAccount() throws InvalidAccountException {
-        // Test entering valid account
-        votingKiosk.enterAccount("user1", new Password("Password1"));
-
-        // Test entering invalid account
-        assertThrows(InvalidAccountException.class,
-                () -> votingKiosk.enterAccount("nonexistentUser", new Password("invalidPassword1")));
-
-        // Test entering account with incorrect password
-        assertThrows(InvalidAccountException.class,
-                () -> votingKiosk.enterAccount("user2", new Password("incorrectPassword1")));
+    public void testGrantExplicitConsentValidOption() throws ProceduralException {
+        // Prueba para asegurarse de que grantExplicitConsent funciona correctamente con una opción válida
+        votingKiosk.initVoting();  // Iniciar el proceso de votación
+        votingKiosk.grantExplicitConsent('y');
+        assertEquals('y', votingKiosk.getExplicitConsentGiven());
     }
 
+    @Test
+    public void testGrantExplicitConsentInvalidOption() throws ProceduralException {
+        // Prueba para asegurarse de que grantExplicitConsent maneja una opción no válida correctamente
+        votingKiosk.initVoting();  // Iniciar el proceso de votación
+
+        assertThrows(ProceduralException.class, () -> votingKiosk.grantExplicitConsent('z'));
+    }
+
+
 }
-*/

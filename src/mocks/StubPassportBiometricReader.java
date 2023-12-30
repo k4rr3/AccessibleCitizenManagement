@@ -19,8 +19,9 @@ public class StubPassportBiometricReader implements PassportBiometricReader {
     public Passport getPassport() {
         return passport;
     }
+    public Nif getNif() {return passport.nif;}
 
-    public void stubPassportBiometricReader() throws InvalidDNIDocumException {
+    public StubPassportBiometricReader() throws InvalidDNIDocumException {
         passport = new Passport(true, new SingleBiometricData(new byte[]{0x00, 0x42}), new SingleBiometricData(new byte[]{0x01, 0x02}), "99572958R");
     }
 

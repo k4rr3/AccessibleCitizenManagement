@@ -4,7 +4,7 @@ import exceptions.InvalidDNIDocumException;
 
 final public class Nif {
 
-    private String nif = null;
+    private String nif;
 
     public Nif(String nif) throws InvalidDNIDocumException{
 
@@ -31,7 +31,7 @@ final public class Nif {
 
         // Check if the letter is correct based on the first eight digits
         if (!isValidLetter(nif.substring(0, 8), lastChar)) {
-            throw new InvalidDNIDocumException("The letter of the NIF is not valid.");
+            throw new InvalidDNIDocumException("The letter " + lastChar + " of the NIF " + nif + " is not valid.");
         }
     }
 
@@ -50,9 +50,12 @@ final public class Nif {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VotingOption vO = (VotingOption) o;
+        if (o.getClass() == VotingOption.class){
+            VotingOption vO = (VotingOption) o;
+        }
+        return ((Nif) o).nif.equals(this.nif);
         //return party.equals(niff.party);
-        return true;
+        //return true;
     }
 
     @Override

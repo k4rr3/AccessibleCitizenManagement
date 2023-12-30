@@ -23,4 +23,14 @@ public class BiometricData {
     public SingleBiometricData getFingerPrintKey() {
         return fingerPrintKey;
     }
+
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        BiometricData bData = (BiometricData) obj;
+        return bData.getFacialKey().equals(this.getFacialKey()) && bData.getFingerPrintKey().equals(this.getFingerPrintKey());
+    }
 }

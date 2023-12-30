@@ -11,10 +11,8 @@ public class StubElectoralOrganism implements ElectoralOrganism {
 
     private HashMap<Nif, Boolean> enabledVoter = new HashMap<>() {{
         try {
-            put(new Nif("48285883Y"), true);
-            put(new Nif("48285883U"), true);
-            put(new Nif("48285883T"), false);
-            put(new Nif("48285883Q"), false);
+            put(new Nif("12345678Z"), true);
+            put(new Nif("99572958R"), true); //FIXME: he hagut d'afegir aquest que es el dni del passaport que provem i treure els altres pq eren invalids
         } catch (Exception e) {
             e.printStackTrace();
         }

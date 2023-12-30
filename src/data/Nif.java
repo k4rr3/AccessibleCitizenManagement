@@ -6,11 +6,12 @@ final public class Nif {
 
     private String nif = null;
 
-    public Nif(String nif) throws InvalidDNIDocumException{
+    public Nif(String nif) throws InvalidDNIDocumException {
 
         isValidNif(nif);
         this.nif = nif;
     }
+
 
     private void isValidNif(String nif) throws InvalidDNIDocumException {
         //Check if the NIF is not null and has the correct length
@@ -50,9 +51,8 @@ final public class Nif {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VotingOption vO = (VotingOption) o;
-        //return party.equals(niff.party);
-        return true;
+        Nif nO = (Nif) o;
+        return nif.equals(nO.getNif());
     }
 
     @Override

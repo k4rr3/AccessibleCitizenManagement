@@ -1,5 +1,6 @@
 package mocks;
 
+import data.Password;
 import data.VotingOption;
 import services.Scrutiny;
 
@@ -14,26 +15,27 @@ public class StubScrutiny implements Scrutiny {
     private int nullVotes;
     private int blankVotes;
 
-    private Map<VotingOption, Integer> validPartiesVoteCount;
-
     //FiXME: Add exceptions for invalid parties on each method
 
-    private List<VotingOption> partyList = Arrays.asList(
-            new VotingOption("Partido Popular"),
-            new VotingOption("Partido Socialista Obrero Español"),
-            new VotingOption("Unidas Podemos"),
-            new VotingOption("Ciudadanos"),
-            new VotingOption("Esquerra Republicana de Catalunya"),
-            new VotingOption("Partido Nacionalista Vasco")
-    );
+    private final HashMap<VotingOption, Integer> parties = new HashMap<>();
+
+    {
+        try {
+            parties.put(new VotingOption("Partido Popular"), 0);
+            parties.put(new VotingOption("Partido Socialista Obrero Español"), 0);
+            parties.put(new VotingOption("Unidas Podemos"), 0);
+            parties.put(new VotingOption("Ciudadanos"), 0);
+            parties.put(new VotingOption("Esquerra Republicana de Catalunya"), 0);
+            parties.put(new VotingOption("Partido Nacionalista Vasco"), 0);
+
+        } catch (IllegalArgumentException e) {
+            // Handle the exception (e.g., log an error, rethrow, etc.)
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initVoteCount(List<VotingOption> validParties) {
-        validPartiesVoteCount = new HashMap<>();
-
-        for (VotingOption party : validParties) {
-            validPartiesVoteCount.put(party, 0);
-        }
 
         totalValidVotes = 0;
         nullVotes = 0;
@@ -49,9 +51,9 @@ public class StubScrutiny implements Scrutiny {
         }
 
         // La papeleta contiene un partido politico valido, se suma como voto al partido selecionado
-        else if (validPartiesVoteCount.containsKey(vopt)) {
-            int partyVoteCount = validPartiesVoteCount.get(vopt);
-            validPartiesVoteCount.put(vopt, partyVoteCount + 1); // add one vote to the valid party
+        else if (parties.containsKey(vopt)) {
+            int partyVoteCount = parties.get(vopt);
+            parties.put(vopt, partyVoteCount + 1); // add one vote to the valid party
 
             totalValidVotes++;
         }
@@ -65,8 +67,8 @@ public class StubScrutiny implements Scrutiny {
 
     @Override
     public int getVotesFor(VotingOption vopt) {
-        if (validPartiesVoteCount.containsKey(vopt)) {
-            return validPartiesVoteCount.get(vopt);
+        if (parties.containsKey(vopt)) {
+            return parties.get(vopt);
         } else {
             System.out.println("Invalid voting option: " + vopt);
         }
@@ -91,7 +93,7 @@ public class StubScrutiny implements Scrutiny {
     @Override
     public void getScrutinyResults() {
         // Display the results party by party
-        for (Map.Entry<VotingOption, Integer> entry : validPartiesVoteCount.entrySet()) {
+        for (Map.Entry<VotingOption, Integer> entry : parties.entrySet()) {
             System.out.println("Party: " + entry.getKey() + ", Votes: " + entry.getValue());
         }
 

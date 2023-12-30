@@ -100,7 +100,7 @@ public class ManualVotingKioskTest {
         votingKiosk.enterAccount("bob", new Password("Bob59678"));
         votingKiosk.confirmIdentif('S');
         votingKiosk.setElectoralOrganism(new StubElectoralOrganism());
-        votingKiosk.enterNif(new Nif("12345678Z"));
+        assertDoesNotThrow(() -> votingKiosk.enterNif(new Nif("12345678Z")));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ManualVotingKioskTest {
         votingKiosk.enterAccount("bob", new Password("Bob59678"));
         votingKiosk.confirmIdentif('S');
         votingKiosk.setElectoralOrganism(new StubElectoralOrganism());
-        votingKiosk.enterNif(new Nif(""));
+        assertThrows(InvalidDNIDocumException.class, () -> votingKiosk.enterNif(new Nif("12345678X")));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class ManualVotingKioskTest {
         votingKiosk.enterAccount("bob", new Password("Bob59678"));
         votingKiosk.confirmIdentif('S');
         votingKiosk.setElectoralOrganism(new StubElectoralOrganism());
-        votingKiosk.enterNif(new Nif(""));
+        votingKiosk.enterNif(new Nif("12345678Z"));
         votingKiosk.initOptionsNavigation();
         votingKiosk.consultVotingOption(new VotingOption("Unidas Podemos"));
         votingKiosk.vote();
@@ -136,7 +136,7 @@ public class ManualVotingKioskTest {
         votingKiosk.enterAccount("bob", new Password("Bob59678"));
         votingKiosk.confirmIdentif('S');
         votingKiosk.setElectoralOrganism(new StubElectoralOrganism());
-        votingKiosk.enterNif(new Nif(""));
+        votingKiosk.enterNif(new Nif("12345678Z"));
         votingKiosk.initOptionsNavigation();
         votingKiosk.consultVotingOption(new VotingOption("Unidas Podemos"));
         votingKiosk.vote();

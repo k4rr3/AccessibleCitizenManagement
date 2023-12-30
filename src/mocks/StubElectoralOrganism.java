@@ -11,10 +11,10 @@ public class StubElectoralOrganism implements ElectoralOrganism {
 
     private HashMap<Nif, Boolean> enabledVoter = new HashMap<>() {{
         try {
-            put(new Nif("48285883Y"), true);
-            put(new Nif("48285883U"), true);
-            put(new Nif("48285883T"), false);
-            put(new Nif("48285883Q"), false);
+            put(new Nif("12345678Z"), true);
+            put(new Nif("22334455Y"), true);
+            put(new Nif("45678965E"), false);
+            put(new Nif("45678964K"), false);
         } catch (Exception e) {
             e.printStackTrace();
         }

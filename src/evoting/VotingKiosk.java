@@ -206,9 +206,9 @@ public class VotingKiosk {
             electoralOrganism.canVote(nif);
             System.out.println("Citizen can vote");
             incManualStep();
+        }else {
+            throw new ProceduralException("Wrong identification method");
         }
-        throw new ProceduralException("Wrong identification method");
-
     }
 
 

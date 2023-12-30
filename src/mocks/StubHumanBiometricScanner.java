@@ -10,7 +10,6 @@ public class StubHumanBiometricScanner implements evoting.biometricdataperiphera
     private BiometricData biometricData;
 
 
-
     public StubHumanBiometricScanner(SingleBiometricData faceData, SingleBiometricData fingerprintData) {
         this.biometricData = new BiometricData(faceData, fingerprintData);
     }
@@ -35,6 +34,8 @@ public class StubHumanBiometricScanner implements evoting.biometricdataperiphera
             throw new HumanBiometricScanningException("Error scanning fingerprint biometrics");
         }
     }
+
+    @Override
     public BiometricData getBiometricData() {
         return biometricData;
     }

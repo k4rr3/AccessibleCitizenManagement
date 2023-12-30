@@ -9,7 +9,6 @@ public class Password {
     private final String password;
 
     public Password(String password) {
-        //System.out.println(password);
         if (isValidPassword(password)) {
             this.password = password;
         } else {
@@ -32,7 +31,6 @@ public class Password {
 
         return hasUppercase && hasLowercase && hasDigit;
     }
-
 
 
     public String getPassword() {

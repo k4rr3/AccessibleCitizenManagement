@@ -19,21 +19,21 @@ class NifTest {
 
     @Test
     void testInvalidLength() {
-        assertThrows(IllegalArgumentException.class, () -> new Nif("12345678"));
+        assertThrows(InvalidDNIDocumException.class, () -> new Nif("12345678"));
     }
 
     @Test
     void testInvalidDigits() {
-        assertThrows(IllegalArgumentException.class, () -> new Nif("1234567Z8"));
+        assertThrows(InvalidDNIDocumException.class, () -> new Nif("1234567Z8"));
     }
 
     @Test
     void testInvalidLetter() {
-        assertThrows(IllegalArgumentException.class, () -> new Nif("123456789"));
+        assertThrows(InvalidDNIDocumException.class, () -> new Nif("123456789"));
     }
 
     @Test
     void testInvalidNifLetter() {
-        assertThrows(IllegalArgumentException.class, () -> new Nif("12345678A")); // Assuming 'A' is not a valid letter for these digits
+        assertThrows(InvalidDNIDocumException.class, () -> new Nif("12345678A")); // Assuming 'A' is not a valid letter for these digits
     }
 }

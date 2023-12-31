@@ -12,7 +12,7 @@ public class Passport {
 
     public BiometricData biometricData;
 
-    public Nif nif = new Nif("77711133X");
+    public Nif nif;
 
     public Passport(boolean isInForce, SingleBiometricData facialBiomData, SingleBiometricData fingerprintBiomData, String nif) throws InvalidDNIDocumException {
         this.isInForce = isInForce;

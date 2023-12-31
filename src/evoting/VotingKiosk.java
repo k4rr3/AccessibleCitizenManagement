@@ -300,8 +300,6 @@ public class VotingKiosk {
         removeBiometricData();
         Passport passport = passportBiometricReader.getPassport();
         electoralOrganism.canVote(passport.nif);
-//        this.nif = passportBiometricReader.getNif(); // FIXME: liniea temporal per obtenir un NIF ni que sigui
-//        electoralOrganism.canVote(nif); //FIXME: no agafem aquest nif de cap puesto, vaig a intentar agafar-lo del passaport ja que ara mateix es null
         System.out.println("Verificación de la identidad y del derecho al voto OK");
 
     }

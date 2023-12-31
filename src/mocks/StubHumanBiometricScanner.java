@@ -16,23 +16,20 @@ public class StubHumanBiometricScanner implements evoting.biometricdataperiphera
 
     @Override
     public SingleBiometricData scanFaceBiometrics() throws HumanBiometricScanningException {
-        try {
-            System.out.println("Biometría facial escaneada");
-            return biometricData.getFacialKey();
-
-        } catch (Exception e) {
+        if (biometricData.getFacialKey() == null)
             throw new HumanBiometricScanningException("Error scanning face biometrics");
-        }
+        System.out.println("Biometría facial escaneada");
+        return biometricData.getFacialKey();
+
     }
 
     @Override
     public SingleBiometricData scanFingerprintBiometrics() throws HumanBiometricScanningException {
-        try {
-            System.out.println("Biometría de la huella digital escaneada");
-            return biometricData.getFingerPrintKey();
-        } catch (Exception e) {
-            throw new HumanBiometricScanningException("Error scanning fingerprint biometrics");
-        }
+
+        if (biometricData.getFingerPrintKey() == null)
+            throw new HumanBiometricScanningException("\"Error scanning fingerprint biometrics");
+        System.out.println("Biometría de la huella digital escaneada");
+        return biometricData.getFingerPrintKey();
     }
 
     @Override

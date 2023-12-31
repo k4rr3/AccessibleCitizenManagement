@@ -4,15 +4,25 @@ import exceptions.InvalidDNIDocumException;
 
 public class Passport {
 
+
     public boolean isInForce;
-
-    private SingleBiometricData facialBiomData;
-    private SingleBiometricData fingerprintBiomData;
-
 
     public BiometricData biometricData;
 
     public Nif nif;
+    private SingleBiometricData facialBiomData;
+    private SingleBiometricData fingerprintBiomData;
+
+    //==============For tests purposes=================================
+    public void setInForce(boolean inForce) {
+        isInForce = inForce;
+    }
+
+    public void setBiometricData(BiometricData biometricData) {
+        this.biometricData = biometricData;
+    }
+    //==================================================================
+
 
     public Passport(boolean isInForce, SingleBiometricData facialBiomData, SingleBiometricData fingerprintBiomData, String nif) throws InvalidDNIDocumException {
         this.isInForce = isInForce;
@@ -25,4 +35,5 @@ public class Passport {
     public BiometricData getBiometricData() {
         return biometricData;
     }
+
 }

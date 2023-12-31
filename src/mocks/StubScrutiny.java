@@ -1,17 +1,15 @@
 package mocks;
 
-import data.Password;
 import data.VotingOption;
 import services.Scrutiny;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class StubScrutiny implements Scrutiny {
 
-    private int totalValidVotes;
+    private int validVotes;
     private int nullVotes;
     private int blankVotes;
 
@@ -37,7 +35,7 @@ public class StubScrutiny implements Scrutiny {
     @Override
     public void initVoteCount(List<VotingOption> validParties) {
 
-        totalValidVotes = 0;
+        validVotes = 0;
         nullVotes = 0;
         blankVotes = 0;
     }
@@ -55,7 +53,7 @@ public class StubScrutiny implements Scrutiny {
             int partyVoteCount = parties.get(vopt);
             parties.put(vopt, partyVoteCount + 1); // add one vote to the valid party
 
-            totalValidVotes++;
+            validVotes++;
         }
 
         // La papeleta contiene un partido politico invalido, se suma como voto nulo
@@ -77,7 +75,7 @@ public class StubScrutiny implements Scrutiny {
 
     @Override
     public int getTotal() {
-        return totalValidVotes;
+        return validVotes + nullVotes + blankVotes;
     }
 
     @Override
@@ -100,6 +98,6 @@ public class StubScrutiny implements Scrutiny {
         // Display the number of blank and null votes
         System.out.println("Blank Votes: " + blankVotes);
         System.out.println("Null Votes: " + nullVotes);
-        System.out.println("Total Valid Votes: " + totalValidVotes);
+        System.out.println("Total Valid Votes: " + validVotes);
     }
 }

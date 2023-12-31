@@ -12,15 +12,18 @@ import exceptions.PassportBiometricReadingException;
 public class StubPassportBiometricReader implements PassportBiometricReader {
 
 
-
-
     private Passport passport;
 
     public Passport getPassport() {
         return passport;
     }
 
+    public void setPassport(Passport passport) {
+        this.passport = passport;
+    }
+
     public StubPassportBiometricReader() throws InvalidDNIDocumException {
+        //Hardcoded passport for test purposes, but if desired, can be modified with the setter above
         passport = new Passport(true, new SingleBiometricData(new byte[]{0x00, 0x42}), new SingleBiometricData(new byte[]{0x01, 0x02}), "99572958R");
     }
 
@@ -36,6 +39,7 @@ public class StubPassportBiometricReader implements PassportBiometricReader {
     @Override
     public Nif getNifWithOCR() throws InvalidDNIDocumException {
         System.out.println("Obteniendo el NIF con OCR...");
+        if (passport.nif == null) throw new InvalidDNIDocumException("Invalid Nif from passport");
         System.out.println("NIF obtenido correctamente");
         return passport.nif;
 
@@ -44,7 +48,9 @@ public class StubPassportBiometricReader implements PassportBiometricReader {
     @Override
     public BiometricData getPassportBiometricData() throws PassportBiometricReadingException {
         System.out.println("Obteniendo datos biométricos del pasaporte...");
-        System.out.println("Datos biométricos del pasaporte leídos correctamente");
+        if (passport.biometricData == null)
+            throw new PassportBiometricReadingException("Invalid biometric data from passport");
+        System.out.println("Datos biométricos del pasaporte leidos correctamente");
         return passport.biometricData;
 
 

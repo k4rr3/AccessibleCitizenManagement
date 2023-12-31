@@ -1,7 +1,6 @@
 package evoting;
 
 import data.SingleBiometricData;
-import evoting.biometricdataperipheral.HumanBiometricScanner;
 import exceptions.*;
 import mocks.StubElectoralOrganism;
 import mocks.StubHumanBiometricScanner;
@@ -9,7 +8,6 @@ import mocks.StubLocalService;
 import mocks.StubPassportBiometricReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.StubPassportBiometricScannerTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 

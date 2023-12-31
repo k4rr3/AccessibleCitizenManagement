@@ -7,13 +7,11 @@ import exceptions.*;
 import mocks.StubElectoralOrganism;
 import mocks.StubLocalService;
 import mocks.StubScrutiny;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.LocalService;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ManualVotingKioskTest {
     private VotingKiosk votingKiosk;
@@ -94,7 +92,7 @@ public class ManualVotingKioskTest {
     }
 
     @Test
-    public void testEnterNifSuccess() throws ProceduralException, InvalidAccountException, InvalidDNIDocumException, NotEnabledException, ConnectException {
+    public void testEnterNifSuccess() throws ProceduralException, InvalidAccountException, InvalidDNIDocumException {
         votingKiosk.setDocument('n');
         votingKiosk.setOpt('n');
         votingKiosk.enterAccount("bob", new Password("Bob59678"));
@@ -104,13 +102,23 @@ public class ManualVotingKioskTest {
     }
 
     @Test
-    public void testEnterNifFailure() throws ProceduralException, InvalidAccountException, InvalidDNIDocumException, NotEnabledException, ConnectException {
+    public void testEnterNifFailure() throws ProceduralException, InvalidAccountException, InvalidDNIDocumException {
         votingKiosk.setDocument('n');
         votingKiosk.setOpt('n');
         votingKiosk.enterAccount("bob", new Password("Bob59678"));
         votingKiosk.confirmIdentif('S');
         votingKiosk.setElectoralOrganism(new StubElectoralOrganism());
         assertThrows(InvalidDNIDocumException.class, () -> votingKiosk.enterNif(new Nif("12345678X")));
+    }
+
+    @Test
+    public void testEnterNifNotEnabledFailure() throws ProceduralException, InvalidAccountException, InvalidDNIDocumException {
+        votingKiosk.setDocument('n');
+        votingKiosk.setOpt('n');
+        votingKiosk.enterAccount("bob", new Password("Bob59678"));
+        votingKiosk.confirmIdentif('S');
+        votingKiosk.setElectoralOrganism(new StubElectoralOrganism());
+        assertThrows(NotEnabledException.class, () -> votingKiosk.enterNif(new Nif("45678964K")));
     }
 
     @Test
@@ -143,6 +151,24 @@ public class ManualVotingKioskTest {
         votingKiosk.setScrutiny(new StubScrutiny());
         votingKiosk.setElectoralOrganism(new StubElectoralOrganism());
         assertThrows(ProceduralException.class, () -> votingKiosk.confirmVotingOption('N'));
+    }
+
+    @Test
+    public void testconfirmVotingOptionConnectionFailure() throws ProceduralException, InvalidAccountException, InvalidDNIDocumException, NotEnabledException, ConnectException {
+        votingKiosk.setDocument('n');
+        votingKiosk.setOpt('n');
+        votingKiosk.enterAccount("bob", new Password("Bob59678"));
+        votingKiosk.confirmIdentif('S');
+        votingKiosk.setElectoralOrganism(new StubElectoralOrganism());
+        votingKiosk.enterNif(new Nif("12345678Z"));
+        votingKiosk.initOptionsNavigation();
+        votingKiosk.consultVotingOption(new VotingOption("Unidas Podemos"));
+        votingKiosk.vote();
+        votingKiosk.setScrutiny(new StubScrutiny());
+        StubElectoralOrganism stubElectoralOrganism = new StubElectoralOrganism();
+        stubElectoralOrganism.setServerIsUp(false);
+        votingKiosk.setElectoralOrganism(stubElectoralOrganism);
+        assertThrows(ConnectException.class, () -> votingKiosk.confirmVotingOption('Y'));
     }
 
 }

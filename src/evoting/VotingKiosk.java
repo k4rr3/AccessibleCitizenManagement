@@ -54,18 +54,20 @@ public class VotingKiosk {
 
     public VotingKiosk() {
         this.manualProcedureStep = 1;
+        this.biomProcedureStep = 1;
         this.scanner = new Scanner(System.in);
     }
 
     //==============Procedural Counters & Methods==============================
     private void checkManualStep(int stepNumber) throws ProceduralException {
         if ((opt == 'd' || opt == 'n') && manualProcedureStep != stepNumber)
-            throw new ProceduralException("Some procedures went wrong" + manualProcedureStep);
+            throw new ProceduralException("Some manual procedures went wrong" + manualProcedureStep);
 
     }
 
     private void checkBiomStep(int stepNumber) throws ProceduralException {
-        if (opt == 'p' && biomProcedureStep != stepNumber) throw new ProceduralException("Some procedures went wrong");
+        if (opt == 'p' && biomProcedureStep != stepNumber)
+            throw new ProceduralException("Some biometric procedures went wrong");
     }
 
     private void incManualStep() {
@@ -157,9 +159,10 @@ public class VotingKiosk {
             System.out.println("Mostrando pantalla de consentimiento explícito informado");
             //Commented due to test purposes
             //char explicitConsent = scanner.next().charAt(0);
+            incBiomStep();
             grantExplicitConsent(this.explicitConsent); //Todo: dejarlo así que se llame de forma automática o que se tenga que llamar aposta??? porque en el DSS sale de voter y no del sistema
             System.out.println("Pantalla de inicio de sesión automática");
-            incBiomStep();
+
         } else {
             throw new ProceduralException("Incorrect document option was chosen " + "'" + opt + "'");
         }
@@ -206,7 +209,7 @@ public class VotingKiosk {
             electoralOrganism.canVote(nif);
             System.out.println("Citizen can vote");
             incManualStep();
-        }else {
+        } else {
             throw new ProceduralException("Wrong identification method");
         }
     }
@@ -292,11 +295,15 @@ public class VotingKiosk {
     public void readFingerPrintBiometrics() throws NotEnabledException, HumanBiometricScanningException, BiometricVerificationFailedException, ConnectException, ProceduralException {
         checkBiomStep(6);
         humanBiometricScanner.scanFingerprintBiometrics();
+        incBiomStep();
         verifyBiometricData(humanBioD, passpBioD);
         removeBiometricData();
-        electoralOrganism.canVote(nif);
+        Passport passport = passportBiometricReader.getPassport();
+        electoralOrganism.canVote(passport.nif);
+//        this.nif = passportBiometricReader.getNif(); // FIXME: liniea temporal per obtenir un NIF ni que sigui
+//        electoralOrganism.canVote(nif); //FIXME: no agafem aquest nif de cap puesto, vaig a intentar agafar-lo del passaport ja que ara mateix es null
         System.out.println("Verificación de la identidad y del derecho al voto OK");
-        incBiomStep();
+
     }
 
     /*=================================================================================*/

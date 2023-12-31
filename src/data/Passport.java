@@ -4,7 +4,7 @@ import exceptions.InvalidDNIDocumException;
 
 public class Passport {
 
-    public boolean isInForce = true;
+    public boolean isInForce;
 
     private SingleBiometricData facialBiomData;
     private SingleBiometricData fingerprintBiomData;
@@ -12,7 +12,7 @@ public class Passport {
 
     public BiometricData biometricData;
 
-    public Nif nif = new Nif("77711133X");
+    public Nif nif;
 
     public Passport(boolean isInForce, SingleBiometricData facialBiomData, SingleBiometricData fingerprintBiomData, String nif) throws InvalidDNIDocumException {
         this.isInForce = isInForce;

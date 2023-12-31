@@ -15,6 +15,7 @@ public class StubElectoralOrganism implements ElectoralOrganism {
             put(new Nif("22334455Y"), true);
             put(new Nif("45678965E"), false);
             put(new Nif("45678964K"), false);
+            put(new Nif("99572958R"), true);
         } catch (Exception e) {
             e.printStackTrace();
         }

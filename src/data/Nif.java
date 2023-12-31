@@ -4,7 +4,7 @@ import exceptions.InvalidDNIDocumException;
 
 final public class Nif {
 
-    private String nif = null;
+    private String nif;
 
     public Nif(String nif) throws InvalidDNIDocumException {
 
@@ -32,7 +32,7 @@ final public class Nif {
 
         // Check if the letter is correct based on the first eight digits
         if (!isValidLetter(nif.substring(0, 8), lastChar)) {
-            throw new InvalidDNIDocumException("The letter of the NIF is not valid.");
+            throw new InvalidDNIDocumException("The letter " + lastChar + " of the NIF " + nif + " is not valid.");
         }
     }
 

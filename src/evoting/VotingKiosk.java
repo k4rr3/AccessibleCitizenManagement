@@ -47,11 +47,6 @@ public class VotingKiosk {
 
     private final Scanner scanner;
 
-    //  ??? The class members
-    // ???The constructor/s
-    // Input events
-
-
     public VotingKiosk() {
         this.manualProcedureStep = 1;
         this.biomProcedureStep = 1;
@@ -137,7 +132,6 @@ public class VotingKiosk {
         System.out.println("Funcionalidad correctamente seleccionada");
         incManualStep();
         incBiomStep();
-
     }
 
 
@@ -187,7 +181,6 @@ public class VotingKiosk {
             System.out.println("Account successfully verified");
             incManualStep();
         }
-
     }
 
 
@@ -259,7 +252,6 @@ public class VotingKiosk {
         }
         incManualStep();
         incBiomStep();
-
     }
 
     // Internal operation, not required
@@ -280,7 +272,6 @@ public class VotingKiosk {
         Passport passport = passportBiometricReader.getPassport();
         this.passpBioD = passport.getBiometricData();
         incBiomStep();
-
     }
 
 
@@ -301,7 +292,6 @@ public class VotingKiosk {
         Passport passport = passportBiometricReader.getPassport();
         electoralOrganism.canVote(passport.nif);
         System.out.println("Verificación de la identidad y del derecho al voto OK");
-
     }
 
     /*=================================================================================*/

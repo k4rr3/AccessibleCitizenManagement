@@ -10,13 +10,15 @@ import exceptions.HumanBiometricScanningException;
  */
 
 public interface HumanBiometricScanner {// Peripheral for scanning human biometrics
-    
+
     BiometricData biometricData = null;
+
     SingleBiometricData scanFaceBiometrics()
             throws HumanBiometricScanningException;
 
     SingleBiometricData scanFingerprintBiometrics()
             throws HumanBiometricScanningException;
+
     default BiometricData getBiometricData() {
         return biometricData;
     }

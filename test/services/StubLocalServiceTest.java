@@ -13,9 +13,6 @@ public class StubLocalServiceTest {
     StubLocalService stubLocalService = new StubLocalService();
 
 
-
-
-
     @Test
     public void testValidAuthentication() {
         try {
@@ -29,13 +26,13 @@ public class StubLocalServiceTest {
 
     @Test
     public void testInvalidPassword() {
-        assertThrows(IllegalArgumentException.class,()->stubLocalService.verifyAccount("bob", new Password("InvalidPassword")));
+        assertThrows(IllegalArgumentException.class, () -> stubLocalService.verifyAccount("bob", new Password("InvalidPassword")));
 
     }
 
     @Test
     public void testUserNotFound() {
-        assertThrows(InvalidAccountException.class,()->stubLocalService.verifyAccount("bobol", new Password("Alice123d")));
+        assertThrows(InvalidAccountException.class, () -> stubLocalService.verifyAccount("bobol", new Password("Alice123d")));
 
 
     }

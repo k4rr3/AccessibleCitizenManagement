@@ -45,12 +45,12 @@ public class StubElectoralOrganism implements ElectoralOrganism {
     }
 
     @Override
-    public void disableVoter(Nif nif) throws ConnectException{
+    public void disableVoter(Nif nif) throws ConnectException {
         // Simulate disabling the voter (mark them as voted)
         if (serverIsUp && enabledVoter.containsKey(nif)) {
 
-                System.out.println("Voter with NIF " + nif.getNif() + " has voted. Disabling voter.");
-                enabledVoter.put(nif, false);
+            System.out.println("Voter with NIF " + nif.getNif() + " has voted. Disabling voter.");
+            enabledVoter.put(nif, false);
         } else {
             throw new ConnectException("No connectivity detected or voter not registered in ElectoralOrganism's DB");
         }

@@ -13,8 +13,11 @@ public interface PassportBiometricReader {// Perip. for reading passport biometr
     default Passport getPassport() {
         return passport;
     }
-    void validatePassport () throws NotValidPassportException;
-    Nif getNifWithOCR () throws InvalidDNIDocumException;
-    BiometricData getPassportBiometricData ()
+
+    void validatePassport() throws NotValidPassportException;
+
+    Nif getNifWithOCR() throws InvalidDNIDocumException;
+
+    BiometricData getPassportBiometricData()
             throws PassportBiometricReadingException;
 }

@@ -77,7 +77,7 @@ class StubScrutinyTest {
         scrutiny.scrutinize(validParty);
         scrutiny.scrutinize(null);
 
-        assertEquals(1, scrutiny.getTotal()-scrutiny.getBlanks()-scrutiny.getNulls());
+        assertEquals(1, scrutiny.getTotal() - scrutiny.getBlanks() - scrutiny.getNulls());
     }
 
     @Test

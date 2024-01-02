@@ -107,6 +107,22 @@ public class VotingKiosk {
         this.opt = opt;
     }
 
+    public BiometricData getHumanBioD(){
+        return humanBioD;
+    }
+
+    public void setHumanBioD(BiometricData bd){
+        this.humanBioD = bd;
+    }
+
+    public BiometricData getPasspBioD(){
+        return passpBioD;
+    }
+
+    public void setPasspBioD(BiometricData bd){
+        this.passpBioD = bd;
+    }
+
     public char explicitConsent;
 
     public void setExplicitConsent(char explicitConsent) {
@@ -298,8 +314,13 @@ public class VotingKiosk {
     private void verifyBiometricData(BiometricData humanBD, BiometricData passpBD) throws BiometricVerificationFailedException, ProceduralException {
         checkBiomStep(7);
         if (!humanBD.equals(passpBD)) {
-            removeBiometricData();
-            throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
+            try{
+                removeBiometricData();
+            } catch (ProceduralException e) {
+
+            } finally {
+                throw new BiometricVerificationFailedException("Biometric data from passport doesn't match human data");
+            }
         }
         incBiomStep();
 

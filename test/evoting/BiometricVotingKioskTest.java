@@ -1,5 +1,6 @@
 package evoting;
 
+import data.BiometricData;
 import data.SingleBiometricData;
 import exceptions.*;
 import mocks.StubElectoralOrganism;
@@ -100,6 +101,52 @@ public class BiometricVotingKioskTest {
         votingKiosk.readPassport();
         votingKiosk.readFaceBiometrics();
         votingKiosk.readFingerPrintBiometrics();
+    }
+
+    @Test
+    public void verifyBioDataCorrectly() throws ProceduralException, HumanBiometricScanningException, PassportBiometricReadingException, InvalidDNIDocumException, NotValidPassportException {
+        votingKiosk.setDocument('p');
+        votingKiosk.readPassport();
+        votingKiosk.readFaceBiometrics();
+        // Doesn't throw BiometricVerificationFailedException
+        assertDoesNotThrow(() -> votingKiosk.readFingerPrintBiometrics());
+    }
+
+    @Test
+    public void verifyWrongBioData() throws ProceduralException, PassportBiometricReadingException, InvalidDNIDocumException, NotValidPassportException, HumanBiometricScanningException, BiometricVerificationFailedException, NotEnabledException, ConnectException {
+        votingKiosk.setDocument('p');
+        votingKiosk.readPassport();
+        votingKiosk.readFaceBiometrics();
+
+        //Fake biometric data for testing purposes [Test for when the data does not match]
+
+        SingleBiometricData fakeHumanSBD = new SingleBiometricData(new byte[]{});
+        BiometricData fakeBioDataHuman = new BiometricData(fakeHumanSBD, fakeHumanSBD);
+
+        SingleBiometricData fakePassportSBD = new SingleBiometricData(new byte[]{0x0f});
+        BiometricData fakeBioDataPassport = new BiometricData(fakePassportSBD, fakePassportSBD);
+
+        votingKiosk.setHumanBioD(fakeBioDataHuman);
+        votingKiosk.setPasspBioD(fakeBioDataPassport);
+
+        assertThrows(BiometricVerificationFailedException.class, () -> votingKiosk.readFingerPrintBiometrics());
+    }
+
+    @Test
+    public void removeBioData() throws ProceduralException, PassportBiometricReadingException, InvalidDNIDocumException, NotValidPassportException, HumanBiometricScanningException, BiometricVerificationFailedException, NotEnabledException, ConnectException {
+        votingKiosk.setDocument('p');
+        votingKiosk.readPassport();
+        votingKiosk.readFaceBiometrics();
+        votingKiosk.readFingerPrintBiometrics();
+
+        BiometricData humanBD = votingKiosk.getHumanBioD();
+        BiometricData passportBD = votingKiosk.getPasspBioD();
+
+        assertEquals(humanBD.getFacialKey(), null);
+        assertEquals(humanBD.getFingerPrintKey(), null);
+
+        assertEquals(passportBD.getFacialKey(), null);
+        assertEquals(passportBD.getFingerPrintKey(), null);
     }
 }
 

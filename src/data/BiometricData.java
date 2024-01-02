@@ -1,7 +1,6 @@
 package data;
 
 public class BiometricData {
-    //Equivalente a una clase Passport
     private SingleBiometricData facialKey;
     private SingleBiometricData fingerPrintKey;
 

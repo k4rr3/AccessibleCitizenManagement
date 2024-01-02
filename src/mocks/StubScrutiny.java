@@ -13,8 +13,6 @@ public class StubScrutiny implements Scrutiny {
     private int nullVotes;
     private int blankVotes;
 
-    //FiXME: Add exceptions for invalid parties on each method
-
     private final HashMap<VotingOption, Integer> parties = new HashMap<>();
 
     {

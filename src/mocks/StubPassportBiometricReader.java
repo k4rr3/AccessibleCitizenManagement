@@ -18,10 +18,6 @@ public class StubPassportBiometricReader implements PassportBiometricReader {
         return passport;
     }
 
-    public void setPassport(Passport passport) {
-        this.passport = passport;
-    }
-
     public StubPassportBiometricReader() throws InvalidDNIDocumException {
         //Hardcoded passport for test purposes, but if desired, can be modified with the setter above
         passport = new Passport(true, new SingleBiometricData(new byte[]{0x00, 0x42}), new SingleBiometricData(new byte[]{0x01, 0x02}), "99572958R");

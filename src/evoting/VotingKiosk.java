@@ -33,8 +33,6 @@ public class VotingKiosk {
 
 
     // -------Biometric Data Peripheral----------------------
-
-    //Todo: No se si es mejor poner aqui stub o añadir el metodo getBiometricData en la interfaz HumanBiom... y PassportBiom...
     private HumanBiometricScanner humanBiometricScanner;
     private PassportBiometricReader passportBiometricReader;
     // ------------------------------------------------------
@@ -170,7 +168,7 @@ public class VotingKiosk {
             //Commented due to test purposes
             //char explicitConsent = scanner.next().charAt(0);
             incBiomStep();
-            grantExplicitConsent(this.explicitConsent); //Todo: dejarlo así que se llame de forma automática o que se tenga que llamar aposta??? porque en el DSS sale de voter y no del sistema
+            grantExplicitConsent(this.explicitConsent);
             System.out.println("Pantalla de inicio de sesión automática");
 
         } else {

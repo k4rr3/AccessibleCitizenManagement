@@ -65,7 +65,6 @@ final public class Nif {
         return "Your NIF {" + "nif='" + nif + '\'' + '}';
     }
 
-    //ToDo: Check if necessary getNif method
     public String getNif() {
         return nif;
     }

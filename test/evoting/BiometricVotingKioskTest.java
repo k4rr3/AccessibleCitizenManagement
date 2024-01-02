@@ -72,23 +72,6 @@ public class BiometricVotingKioskTest {
     }
 
     @Test
-    public void invalidPassport() {
-
-    }
-
-    @Test
-    public void incorrectPassportReadNif() {
-
-    }
-
-    @Test
-    public void incorrectPassportReadBioData() {
-
-    }
-
-    // OCR test?? ns nocal no
-
-    @Test
     public void readFaceBioCorrectly() throws ProceduralException, PassportBiometricReadingException, InvalidDNIDocumException, NotValidPassportException, HumanBiometricScanningException {
         votingKiosk.setDocument('p');
         votingKiosk.readPassport();
